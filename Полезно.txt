@@ -1,0 +1,3 @@
+git config --global core.quotePath false
+
+Отключает escape для строк в git status и не только
