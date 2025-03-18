@@ -35,7 +35,11 @@ namespace ConsoleApp {
         }
         public BigRational(BigInteger num, BigInteger denom) {
             int sign = denom.Sign;
-            if (sign == 0) throw new DivideByZeroException();
+            if (sign == 0) {
+                // особый случай: 0/0=0, а не бусконечность, т.е. не будет DivideByZeroException
+                if (num.IsZero) { numerator = BigInteger.Zero; denominator = BigInteger.One; return; }
+                throw new DivideByZeroException();
+            }
             // забавно, что это единственное место с делением на 0
             // и сюдя можно попасть откуда угодно, где это же деление на 0
 
@@ -100,6 +104,8 @@ namespace ConsoleApp {
             new(numerator * numerator, denominator * denominator);
 
         public static bool TryParse(string stringValue, out BigRational result, int numSys = 10) {
+            if (string.IsNullOrEmpty(stringValue)) { result = Zero; return false; }
+
             int div_idx = stringValue.IndexOf(DIV_CHAR);
             bool valid;
             if (div_idx == -1) {
@@ -126,12 +132,13 @@ namespace ConsoleApp {
             return result;
         }
 
-        public override void ToString(StringBuilder sb) {
+        public override void ToString(StringBuilder sb, int _ = 0) {
             sb.Append(numerator);
+            if (denominator == BigInteger.One) return;
             sb.Append(DIV_CHAR);
             sb.Append(denominator);
         }
 
-        public override string Raw => $"{numerator} / {denominator}";
+        public override string Raw => this.ToString().Replace(DIV_CHAR.ToString(), $" {DIV_CHAR} "); // $"{numerator} / {denominator}";
     }
 }

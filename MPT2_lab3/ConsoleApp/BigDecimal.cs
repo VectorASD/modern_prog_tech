@@ -129,9 +129,11 @@ namespace ConsoleApp {
         public override BigRational Inverse() =>
             new BigRational(this).Inverse();
         public override BigDecimal Square() =>
-            new(BigInteger.Pow(number.Number, 2), CountAfterDot * 2);
+            new(BigInteger.Pow(number.Number, 2), number.NumberSystem, CountAfterDot * 2);
 
         public static bool TryParse(string stringValue, out BigDecimal result, int numSys = 10) {
+            if (string.IsNullOrEmpty(stringValue)) { result = Zero; return false; }
+
             int dot_idx = stringValue.IndexOf(DOT_CHAR);
             bool valid;
             BigInt int_result;
@@ -158,12 +160,19 @@ namespace ConsoleApp {
             return result;
         }
 
-        public override void ToString(StringBuilder sb) {
-            string withoutDot = number.ToString();
-            int dot_idx = withoutDot.Length - CountAfterDot;
-            sb.Append($"{withoutDot[..dot_idx]}{DOT_CHAR}{withoutDot[dot_idx..]}");
+        public override void ToString(StringBuilder sb, int _ = 0) {
+            number.ToString(sb, CountAfterDot);
+            /*string withoutDot = number.ToString();
+            if (CountAfterDot >= 1) {
+                int dot_idx = withoutDot.Length - CountAfterDot;
+                if (dot_idx <= 0)
+                    sb.Append($"0{DOT_CHAR}{withoutDot}"); not work :/
+                else
+                    sb.Append($"{withoutDot[..dot_idx]}{DOT_CHAR}{withoutDot[dot_idx..]}");
+            } else
+                sb.Append(withoutDot);*/
         }
 
-        public override string Raw => $"{number.Number} (digits: {number.DigitCount}) / {number.NumberSystem} ^ {CountAfterDot}";
+        public override string Raw => $"{this} (digits: {number.DigitCount}) / {number.NumberSystem} ^ {CountAfterDot}";
     }
 }

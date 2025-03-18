@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConsoleApp {
-    public class BigInt(BigInteger num, int numSys, int digitCount):
+    public class BigInt(BigInteger number, int numSys, int digitCount) :
         ANumber,
         IEquatable<BigInt>,
         IComparable<BigInt> {
@@ -21,11 +21,13 @@ namespace ConsoleApp {
         // с расширением Parse, TryParse, ToString для поддержки систем счисления.
         // Реальное значение числа: number
 
-        private readonly BigInteger number = num;
+        private readonly BigInteger number = number;
+        private readonly int numSys = numSys;
+        private readonly int digitCount = digitCount;
 
         public BigInteger Number => number;
-        public int NumberSystem { get; } = numSys;
-        public int DigitCount { get; } = digitCount;
+        public int NumberSystem => numSys;
+        public int DigitCount => digitCount;
 
         public BigInt() :
             this(BigInteger.Zero, 10) {
@@ -53,7 +55,7 @@ namespace ConsoleApp {
         private int CachedHash = 0;
         public override int GetHashCode() {
             if (CachedHash == 0)
-                CachedHash = 31 * (31 + number.GetHashCode()) + NumberSystem;
+                CachedHash = 31 * (31 + number.GetHashCode()) + numSys;
             return CachedHash;
         }
 
@@ -61,27 +63,24 @@ namespace ConsoleApp {
 
         public override bool IsZero => number.IsZero;
         public static BigInt operator +(BigInt a, BigInt b) =>
-            new(a.number + b.number, Math.Max(a.NumberSystem, b.NumberSystem));
+            new(a.number + b.number, Math.Max(a.numSys, b.numSys));
         public static BigInt operator -(BigInt a, BigInt b) =>
-            new(a.number - b.number, Math.Max(a.NumberSystem, b.NumberSystem));
+            new(a.number - b.number, Math.Max(a.numSys, b.numSys));
         public static BigInt operator *(BigInt a, BigInt b) =>
-            new(a.number * b.number, Math.Max(a.NumberSystem, b.NumberSystem));
+            new(a.number * b.number, Math.Max(a.numSys, b.numSys));
         public static BigRational operator /(BigInt a, BigInt b) =>
-            new(a.Number, b.Number);
+            new(a.number, b.number);
 
         public static BigInt operator +(BigInt a) => a;
-        public static BigInt operator -(BigInt a) => new(-a.Number, a.NumberSystem);
+        public static BigInt operator -(BigInt a) => new(-a.number, a.numSys);
 
         public override BigRational Inverse() =>
             new(BigInteger.One, number);
         public override BigInt Square() =>
-            new(number * number, NumberSystem);
+            new(number * number, numSys);
 
         public static bool TryParse(string stringValue, out BigInt result, int numSys = 10) {
-            if (string.IsNullOrEmpty(stringValue)) {
-                result = new BigInt(0, numSys);
-                return false;
-            }
+            if (string.IsNullOrEmpty(stringValue)) { result = Zero; return false; }
 
             int i = 0;
             int length = stringValue.Length;
@@ -124,7 +123,7 @@ namespace ConsoleApp {
             return result;
         }
 
-        public override void ToString(StringBuilder sb) {
+        public override void ToString(StringBuilder sb, int countAfterDot = 0) {
             ArgumentNullException.ThrowIfNull(sb);
 
             int sign = number.Sign;
@@ -136,17 +135,24 @@ namespace ConsoleApp {
             BigInteger num = sign == -1 ? -number : number;
             if (sign == -1) sb.Append('-');
 
-            int numSys = NumberSystem;
-            int digitCount = DigitCount;
-            var divisor = BigInteger.Pow(numSys, digitCount - 1);
+            int digitCount_m1 = digitCount - 1;
+            var divisor = BigInteger.Pow(numSys, digitCount_m1);
 
-            for (int i = 0; i < digitCount; i++) {
+            int i = digitCount_m1;
+            for (; i >= countAfterDot; i--) {
+                int digitValue = (int)((num / divisor) % numSys);
+                sb.Append(StringifyDigit(digitValue));
+                divisor /= numSys;
+            }
+            if (i == digitCount_m1) sb.Append('0');
+            if (i >= 0) sb.Append(BigDecimal.DOT_CHAR);
+            for (; i >= 0; i--) {
                 int digitValue = (int)((num / divisor) % numSys);
                 sb.Append(StringifyDigit(digitValue));
                 divisor /= numSys;
             }
         }
 
-        public override string Raw => $"{this} (sys: {NumberSystem}) (digits: {DigitCount})";
+        public override string Raw => $"{this} (sys: {numSys}) (digits: {digitCount})";
     }
 }

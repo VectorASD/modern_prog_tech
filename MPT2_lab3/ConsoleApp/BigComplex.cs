@@ -99,6 +99,8 @@ namespace ConsoleApp {
             new(real.Square() - imaginary.Square(), real * imaginary * BigRational.Two);
 
         public static bool TryParse(string stringValue, out BigComplex result, int numSys = 10) {
+            if (string.IsNullOrEmpty(stringValue)) { result = Zero; return false; }
+
             int div_idx = stringValue.IndexOf(I_PLUS_CHAR);
             bool negative = div_idx == -1;
             int char_size = I_PLUS_CHAR.Length; // даже это предусмотрел
@@ -130,7 +132,7 @@ namespace ConsoleApp {
             return result;
         }
 
-        public override void ToString(StringBuilder sb) {
+        public override void ToString(StringBuilder sb, int _ = 0) {
             int sign = imaginary.Numerator.Sign;
             if (sign == 0) {
                 real.ToString(sb);

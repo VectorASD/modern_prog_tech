@@ -118,7 +118,7 @@ namespace ConsoleApp {
 
         // public static abstact bool TryParse(string stringValue, out T result, int numSys); static и abstract конфликтуют
         // public static abstact T Parse(string stringValue, int numSys);                     static и abstract конфликтуют
-        public abstract void ToString(StringBuilder sb);
+        public abstract void ToString(StringBuilder sb, int countAfterDot = 0);
         public override string ToString() {
             if (IsZero) return "0";
 
