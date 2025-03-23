@@ -6,19 +6,30 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Calculator {
-    public class NumberEditor {
-        private readonly List<char> text = [];
+    public class NumberEditor(string init_text = ""): IEditor {
+
+        private readonly List<char> text = [.. init_text];
         private bool negative = false;
         private int numSys = 10;
 
-        public string Text => (negative ? "-" : "") + new string([.. text]);
+        public string Text {
+            get => (negative ? "-" : "") + new string([.. text]);
+            set {
+                negative = value.StartsWith('-');
+                text.Clear();
+                text.AddRange(negative ? value.Skip(1) : value); // оба ответвления соответствуют IEnumerable<char>
+            }
+        }
         public ANumber Value =>
-            text.Count == 0 ? BigInt.Zero :
-            BigInt.Parse(Text, numSys);
+            text.Count == 0 ? BigInt.Zero
+                            : BigInt.Parse(Text, numSys);
         public int NumSys { get { return numSys; } set { numSys = value; } }
+        public int Length => text.Count + (negative ? 1 : 0);
+        public bool IsNegative => negative;
 
 
 
+        public override string ToString() => Text;
         public bool IsZero => Value.IsZero;
 
         // private bool FirstZero => text.Count > 0 && text[0] == '0';

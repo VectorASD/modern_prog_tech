@@ -43,7 +43,7 @@
             inputRichTextBox.ForeColor = Color.RoyalBlue;
             inputRichTextBox.Location = new Point(12, 12);
             inputRichTextBox.Name = "inputRichTextBox";
-            inputRichTextBox.Size = new Size(400, 200);
+            inputRichTextBox.Size = new Size(984, 236);
             inputRichTextBox.TabIndex = 0;
             inputRichTextBox.Text = "";
             inputRichTextBox.TextChanged += InputRichTextBox_TextChanged;
@@ -55,7 +55,7 @@
             outputLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             outputLabel.AutoSize = true;
             outputLabel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            outputLabel.Location = new Point(12, 266);
+            outputLabel.Location = new Point(12, 302);
             outputLabel.Name = "outputLabel";
             outputLabel.Size = new Size(21, 50);
             outputLabel.TabIndex = 3;
@@ -65,11 +65,11 @@
             // 
             numSysTrackBar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             numSysTrackBar.LargeChange = 1;
-            numSysTrackBar.Location = new Point(12, 218);
+            numSysTrackBar.Location = new Point(12, 254);
             numSysTrackBar.Maximum = 16;
             numSysTrackBar.Minimum = 2;
             numSysTrackBar.Name = "numSysTrackBar";
-            numSysTrackBar.Size = new Size(347, 45);
+            numSysTrackBar.Size = new Size(931, 45);
             numSysTrackBar.TabIndex = 1;
             numSysTrackBar.Value = 10;
             numSysTrackBar.ValueChanged += NumSysTrackBar_ValueChanged;
@@ -79,7 +79,7 @@
             numSysNumericUpDown.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             numSysNumericUpDown.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 204);
             numSysNumericUpDown.ForeColor = Color.LimeGreen;
-            numSysNumericUpDown.Location = new Point(365, 218);
+            numSysNumericUpDown.Location = new Point(949, 254);
             numSysNumericUpDown.Maximum = new decimal(new int[] { 16, 0, 0, 0 });
             numSysNumericUpDown.Minimum = new decimal(new int[] { 2, 0, 0, 0 });
             numSysNumericUpDown.Name = "numSysNumericUpDown";
@@ -93,7 +93,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(424, 325);
+            ClientSize = new Size(1008, 361);
             Controls.Add(numSysNumericUpDown);
             Controls.Add(numSysTrackBar);
             Controls.Add(outputLabel);

@@ -10,7 +10,7 @@ namespace Calculator
 
 
 
-        private readonly NumberEditor numberEditor = new();
+        private readonly DecimalEditor editor = new();
 
         private void InputRichTextBox_TextChanged(object sender, EventArgs e) {
             if (sender is not RichTextBox richTextBox) return;
@@ -20,7 +20,7 @@ namespace Calculator
 
         private void UpdateUI() {
             try {
-                ANumber value = numberEditor.Value;
+                ANumber value = editor.Value;
                 outputLabel.Text = "Type: " + value.GetType().Name + "\n" + "Raw: " + value.Raw;
             } catch (Exception err) {
                 outputLabel.Text = "Error: " + err.Message;
@@ -53,7 +53,7 @@ namespace Calculator
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
             int start = richTextBox.SelectionStart;
-            richTextBox.Text = numberEditor.Handler(e.KeyCode, shift, ctrl, alt, start, out int delta);
+            richTextBox.Text = editor.Handler(e.KeyCode, shift, ctrl, alt, start, out int delta);
             richTextBox.SelectionStart = Math.Max(0, start + delta);
 
             e.Handled = true; // блокирует управление стрелочками
@@ -66,7 +66,7 @@ namespace Calculator
 
             int value = trackBar.Value;
             numSysNumericUpDown.Value = value;
-            numberEditor.NumSys = value;
+            editor.NumSys = value;
             UpdateUI();
         }
 
@@ -75,7 +75,7 @@ namespace Calculator
 
             int value = Convert.ToInt32(Math.Floor(numericUpDown.Value));
             numSysTrackBar.Value = value;
-            numberEditor.NumSys = value;
+            editor.NumSys = value;
             UpdateUI();
         }
     }
