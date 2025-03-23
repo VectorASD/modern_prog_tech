@@ -37,7 +37,10 @@ namespace ConsoleApp {
             int sign = denom.Sign;
             if (sign == 0) {
                 // особый случай: 0/0=0, а не бусконечность, т.е. не будет DivideByZeroException
-                if (num.IsZero) { numerator = BigInteger.Zero; denominator = BigInteger.One; return; }
+                // if (num.IsZero) { numerator = BigInteger.Zero; denominator = BigInteger.One; return; }
+                
+                // но решено, что лучше этот случай НЕ рассматривать, поскольку, иначе, можно в комплексных числах делить на 0 когда угодно
+                
                 throw new DivideByZeroException();
             }
             // забавно, что это единственное место с делением на 0
@@ -93,7 +96,7 @@ namespace ConsoleApp {
         public static BigRational operator *(BigRational a, BigRational b) =>
             new(a.numerator * b.numerator, a.denominator * b.denominator);
         public static BigRational operator /(BigRational a, BigRational b) =>
-            new(a.numerator * b.denominator, b.numerator * b.denominator);
+            new(a.numerator * b.denominator, a.denominator * b.numerator);
 
         public static BigRational operator +(BigRational a) => a;
         public static BigRational operator -(BigRational a) => new(-a.numerator, a.denominator);

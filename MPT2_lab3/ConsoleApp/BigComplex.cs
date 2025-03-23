@@ -44,7 +44,10 @@ namespace ConsoleApp {
 
 
 
-        public bool Equals(BigComplex? other) => CompareTo(other) == 0;
+        public bool Equals(BigComplex? other) {
+            try { return CompareTo(other) == 0; }
+            catch (NotImplementedException) { return false; }
+        }
         public override bool Equals(object? obj) => Equals(obj as BigComplex);
 
         public int CompareTo(BigComplex? other) {
@@ -76,7 +79,7 @@ namespace ConsoleApp {
         public static BigComplex operator *(BigComplex a, BigComplex b) =>
             new(a.real * b.real - a.imaginary * b.imaginary, a.real * b.imaginary + a.imaginary * b.real);
         public static BigComplex operator /(BigComplex a, BigComplex b) {
-            BigRational div = a.imaginary.Square() + b.imaginary.Square();
+            BigRational div = b.real.Square() + b.imaginary.Square();
             BigRational real = (a.real * b.real + a.imaginary * b.imaginary) / div;
             BigRational imag = (a.imaginary * b.real - a.real * b.imaginary) / div;
             return new(real, imag);
@@ -87,13 +90,12 @@ namespace ConsoleApp {
 
         public override BigComplex Inverse() {
             // a.real = 1, a.imaginary = 0, b = this
-            //BigRational div = 0.Square() + imaginary.Square();
+            //BigRational div = real.Square() + imaginary.Square();
             //BigRational real = (1 * real + 0 * imaginary) / div;
             //BigRational imag = (0 * real - 1 * imaginary) / div; Получили единичную матрицу 2x2
             //return new(real, imag);
-            BigRational div = imaginary.Square();
-            return new(real / div, imaginary.Inverse());
-            // imaginary / div -> BigRational.One / imaginary -> imaginary.Inverse()
+            BigRational div = real.Square() + imaginary.Square();
+            return new(real / div, -imaginary / div);
         }
         public override BigComplex Square() =>
             new(real.Square() - imaginary.Square(), real * imaginary * BigRational.Two);
@@ -116,14 +118,17 @@ namespace ConsoleApp {
                 return true;
             }
 
-            valid = BigRational.TryParse(stringValue[..div_idx], out BigRational raal_result, numSys);
-            if (!valid) { result = Zero; return false; }
+            BigRational real_result;
+            if (div_idx != 0) {
+                valid = BigRational.TryParse(stringValue[..div_idx], out real_result, numSys);
+                if (!valid) { result = Zero; return false; }
+            } else real_result = BigRational.Zero;
 
             valid = BigRational.TryParse(stringValue[(div_idx + char_size)..], out BigRational imag_result, numSys);
             if (!valid) { result = Zero; return false; }
             if (negative) imag_result = -imag_result;
 
-            result = new BigComplex(raal_result, imag_result);
+            result = new BigComplex(real_result, imag_result);
             return true;
         }
         public static BigComplex Parse(string stringValue, int numSys = 10) {

@@ -136,11 +136,11 @@ namespace TestProject {
         }
 
         [TestMethod]
-        [DataRow(-14, 2, 0, -185, 2, 1, "14 / 185")]
-        [DataRow(15, 2, 0, 81, 2, 1, "5 / 27")]
-        [DataRow(151, 10, 1, 8, 2, 0, "151 / 8")]
-        [DataRow(20, 2, 0, -55, 10, 1, "-20 / 11")]
-        [DataRow(-55, 2, 1, 20, 3, 0, "-11 / 4")]
+        [DataRow(-14, 2, 0, -185, 2, 1, "28 / 185")]
+        [DataRow(15, 2, 0, 81, 2, 1, "10 / 27")]
+        [DataRow(151, 10, 1, 8, 2, 0, "151 / 80")]
+        [DataRow(20, 2, 0, -55, 10, 1, "-40 / 11")]
+        [DataRow(-55, 2, 1, 20, 3, 0, "-11 / 8")]
         public void Div(int L_number, int L_numSys, int L_countAfterDot, int R_number, int R_numSys, int R_countAfterDot, string expected) {
             BigDecimal L = new(new BigInteger(L_number), L_numSys, L_countAfterDot);
             BigDecimal R = new(new BigInteger(R_number), R_numSys, R_countAfterDot);
@@ -241,6 +241,6 @@ namespace TestProject {
         }
 
         // Тестировать ToString не имеет смысла, т.к. он уже вложен в Raw,
-        // который и которым протестирвано уже 39 раз!
+        // который и которым протестирвано уже 11 раз!
     }
 }
