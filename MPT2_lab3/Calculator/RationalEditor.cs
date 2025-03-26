@@ -103,16 +103,19 @@ namespace Calculator {
             if (keyCode == Keys.Oem2) {
                 delta = IsDivided ? (index < len ? 1 : 0) : 1;
                 if (index >= len) index--; // добавление '/' в правом числе, т.е. перемещение '/' ещё правее
-                if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить '/' перед минусом
+                //if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить '/' перед минусом
 
                 bool negative_right = right is not null && right.IsNegative;
-                if (negative_right) right?.AddSign(0, out _);
+                if (negative_right) { right?.AddSign(0, out _); index = Math.Max(0, index - 1); }
                 string text = IsDivided ? $"{left}{right}" : left.Text;
                 DecimalEditor new_right;
                 try {
                     new_right = new(text[index..]);
                     left.Text = text[..index];
-                } catch (FormatException) { delta = 0; return Text; } // при перемещении '/', выходит две точки, игнорируем действие 
+                } catch (FormatException) { // при перемещении '/', выходит две точки, игнорируем действие
+                    if (negative_right) right?.AddSign(0, out _); // возврат минуса назад
+                    delta = 0; return Text;
+                } 
                 right = new_right;
                 if (negative_right) right?.AddSign(0, out _);
                 return Text;
