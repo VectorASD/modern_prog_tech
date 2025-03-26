@@ -57,7 +57,7 @@ namespace Calculator {
         public string AddZero(bool shift, int index, out int delta) => AddDigit(0, shift, index, out delta); // unused
 
         public string Backspace(int index, out int delta) {
-            if (negative && index == 0) return AddSign(index, out delta);
+            if (negative && index == 0) return AddSign(1, out delta);
 
             if (negative) index--;
             if (index < 0 || index >= text.Count) {delta = 0; return Text; }
@@ -88,7 +88,7 @@ namespace Calculator {
             if (keyCode == Keys.Delete)
                 return Backspace(index, out _);
 
-            // if (keyCode != Keys.ControlKey && keyCode != Keys.ShiftKey && keyCode != Keys.Home) MessageBox.Show("Handler: " + keyCode);
+            // MessageBox.Show("Handler: " + keyCode);
 
             delta = 0;
             return Text;
