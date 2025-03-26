@@ -120,11 +120,17 @@ namespace ConsoleApp {
             if (stringValue.IndexOf(DIV_CHAR, div_idx + 1) != -1) {
                 result = Zero; return false; }
 
-            valid = BigDecimal.TryParse(stringValue[..div_idx], out BigDecimal num_result, numSys);
-            if (!valid) { result = Zero; return false; }
+            BigDecimal num_result;
+            if (div_idx > 0) {
+                valid = BigDecimal.TryParse(stringValue[..div_idx], out num_result, numSys);
+                if (!valid) { result = Zero; return false; }
+            } else num_result = BigDecimal.Zero;
 
-            valid = BigDecimal.TryParse(stringValue[(div_idx + 1)..], out BigDecimal denom_result, numSys);
-            if (!valid) { result = Zero; return false; }
+            BigDecimal denom_result;
+            if (stringValue.Length > div_idx + 1) {
+                valid = BigDecimal.TryParse(stringValue[(div_idx + 1)..], out denom_result, numSys);
+                if (!valid) { result = Zero; return false; }
+            } else denom_result = BigDecimal.One;
 
             result = new BigRational(num_result) / new BigRational(denom_result);
             return true;

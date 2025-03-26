@@ -10,10 +10,10 @@ namespace Calculator
 
 
 
-        private readonly DecimalEditor editor = new();
+        private readonly RationalEditor editor = new();
 
         private void InputRichTextBox_TextChanged(object sender, EventArgs e) {
-            if (sender is not RichTextBox richTextBox) return;
+            // if (sender is not RichTextBox richTextBox) return;
 
 
         }
@@ -35,7 +35,7 @@ namespace Calculator
         // ≈сли убрать все MessageBox.Show, то пор€док KeyPress и KeyDown будто помен€етс€ :/
 
         private void InputRichTextBox_KeyPress(object sender, KeyPressEventArgs e) {
-            if (sender is not RichTextBox richTextBox) return;
+            // if (sender is not RichTextBox richTextBox) return;
 
             // MessageBox.Show("KeyPress: '" + richTextBox.Text + "', '" + e.KeyChar + "'");
 

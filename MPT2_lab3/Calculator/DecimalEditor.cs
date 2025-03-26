@@ -16,12 +16,20 @@ namespace Calculator {
         public string Text {
             get => IsDotted ? $"{left}{BigDecimal.DOT_CHAR}{right}"
                             : left.Text;
-            set => throw new NotImplementedException();
+            set {
+                int pos = value.IndexOf(BigDecimal.DOT_CHAR);
+                if (pos == -1) { left.Text = value; right = null; return; }
+                if (value.IndexOf(BigDecimal.DOT_CHAR, pos + 1) != -1) throw new FormatException("Две и более точек недопустимо");
+                left.Text = value[..pos];
+                right = new(value[(pos + 1)..]);
+            }
+        }
+        public DecimalEditor(string? init_text = null) {
+            if (init_text is not null) Text = init_text;
         }
 
         public ANumber Value =>
-            IsDotted ? Length == 1 ? BigDecimal.Zero
-                                   : BigDecimal.Parse(Text, numSys)
+            IsDotted ? BigDecimal.Parse(Text, numSys)
                      : left.Value;
         public int NumSys {
             get { return numSys; }
@@ -37,8 +45,8 @@ namespace Calculator {
         public override string ToString() => Text;
         public bool IsZero => Value.IsZero;
 
-        public string AddSign(out int delta) {
-            left.AddSign(out delta);
+        public string AddSign(int index, out int delta) {
+            left.AddSign(index, out delta);
             return Text;
         }
 
@@ -77,7 +85,7 @@ namespace Calculator {
 
             if (keyCode == Keys.OemPeriod || keyCode == Keys.Oemcomma) {
                 delta = IsDotted ? (index < len ? 1 : 0) : 1;
-                if (index >= len) index--; // добавление точки в правом чисел, т.е. перемещение точки
+                if (index >= len) index--; // добавление точки в правом числе, т.е. перемещение точки ещё правее
                 if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить точку перед минусом
 
                 string text = IsDotted ? $"{left}{right}" : left.Text;
@@ -86,7 +94,7 @@ namespace Calculator {
                 return Text;
             }
             if (keyCode == Keys.OemMinus)
-                return AddSign(out delta);
+                return AddSign(index, out delta);
 
             if (index < len || right is null) {
                 if (keyCode == Keys.Delete && index == len - 1) { RemoveDot(); return Text; }

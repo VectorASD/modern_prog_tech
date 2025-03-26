@@ -16,7 +16,7 @@ namespace Calculator {
 
 
         public bool IsZero { get; }
-        public string AddSign(out int delta);
+        public string AddSign(int index, out int delta);
         public string AddDigit(int digit, bool shift, int index, out int delta);
         public string AddZero(bool shift, int index, out int delta);
         public string Backspace(int index, out int delta);

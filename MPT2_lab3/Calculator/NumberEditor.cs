@@ -34,9 +34,9 @@ namespace Calculator {
 
         // private bool FirstZero => text.Count > 0 && text[0] == '0';
 
-        public string AddSign(out int delta) {
+        public string AddSign(int index, out int delta) {
             negative = !negative;
-            delta = negative ? 1 : -1;
+            delta = negative ? 1 : (index <= 0 ? 0 : - 1);
             return Text;
         }
 
@@ -57,7 +57,7 @@ namespace Calculator {
         public string AddZero(bool shift, int index, out int delta) => AddDigit(0, shift, index, out delta); // unused
 
         public string Backspace(int index, out int delta) {
-            if (negative && index == 0) return AddSign(out delta);
+            if (negative && index == 0) return AddSign(index, out delta);
 
             if (negative) index--;
             if (index < 0 || index >= text.Count) {delta = 0; return Text; }
@@ -82,13 +82,13 @@ namespace Calculator {
             if (keyCode == Keys.Left) { delta = -1; return Text; }
             if (keyCode == Keys.Right) { delta = 1; return Text; }
             if (keyCode == Keys.OemMinus)
-                return AddSign(out delta);
+                return AddSign(index, out delta);
             if (keyCode == Keys.Back)
                 return Backspace(index - 1, out delta);
             if (keyCode == Keys.Delete)
                 return Backspace(index, out _);
 
-            //if (keyCode != Keys.ControlKey && keyCode != Keys.ShiftKey && keyCode != Keys.Home) MessageBox.Show("Handler: " + keyCode);
+            // if (keyCode != Keys.ControlKey && keyCode != Keys.ShiftKey && keyCode != Keys.Home) MessageBox.Show("Handler: " + keyCode);
 
             delta = 0;
             return Text;

@@ -146,9 +146,11 @@ namespace ConsoleApp {
             if (stringValue.IndexOf(DOT_CHAR, dot_idx + 1) != -1) {
                 result = Zero; return false; }
 
-            string withoutDot = stringValue[..dot_idx] + stringValue[(dot_idx+1)..];
-            valid = BigInt.TryParse(withoutDot, out int_result, numSys);
-            if (!valid) { result = Zero; return false; }
+            string withoutDot = stringValue[..dot_idx] + stringValue[(dot_idx + 1)..];
+            if (withoutDot.Length > 0) {
+                valid = BigInt.TryParse(withoutDot, out int_result, numSys);
+                if (!valid) { result = Zero; return false; }
+            } else int_result = BigInt.Zero;
 
             int countAfterDot = withoutDot.Length - dot_idx;
             result = new BigDecimal(int_result, countAfterDot);
