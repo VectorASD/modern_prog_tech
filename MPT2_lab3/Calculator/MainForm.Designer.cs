@@ -57,9 +57,9 @@
             outputLabel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             outputLabel.Location = new Point(12, 302);
             outputLabel.Name = "outputLabel";
-            outputLabel.Size = new Size(21, 50);
+            outputLabel.Size = new Size(21, 100);
             outputLabel.TabIndex = 3;
-            outputLabel.Text = "?\r\n?\r\n";
+            outputLabel.Text = "?\r\n?\r\n?\r\n?";
             // 
             // numSysTrackBar
             // 
@@ -93,7 +93,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1008, 361);
+            ClientSize = new Size(1008, 411);
             Controls.Add(numSysNumericUpDown);
             Controls.Add(numSysTrackBar);
             Controls.Add(outputLabel);

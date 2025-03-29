@@ -123,7 +123,7 @@ namespace Calculator {
                     delta = 0; return Text;
                 }
                 right = new_right;
-                negative = neg;
+                negative ^= neg;
                 delta = is_right ? 0 : ImagSize;
                 return Text;
             }
@@ -138,6 +138,34 @@ namespace Calculator {
                 right.Handler(keyCode, shift, ctrl, alt, index - len2, out delta);
             }
             return Text;
+        }
+
+
+
+        public static readonly ComplexEditor Void = new();
+
+        public bool Slice(int index, out ComplexEditor L, out ComplexEditor R) {
+            string text = Text;
+            try {
+                L = new(text[..index]);
+                R = new(text[index..]);
+                _ = L.Value; _ = R.Value; // чекер
+                return true;
+            } catch (FormatException) { // при перемещении 'i', выходит две точки, или две '/', игнорируем действие
+                L = R = Void;
+                return false;
+            }
+        }
+        public bool Combine(ComplexEditor right, out ComplexEditor result) { // ещё подошло бы название Concat, но воздержусь ;'-}
+            string text = Text + right.Text;
+            try {
+                result = new(text);
+                _ = result.Value; // чекер
+                return true;
+            } catch (FormatException) {
+                result = Void;
+                return false;
+            }
         }
     }
 }

@@ -8,11 +8,12 @@ namespace Calculator
         public MainForm() {
             InitializeComponent();
             UpdateUI();
+            inputRichTextBox.Text = editor.Text;
         }
 
 
 
-        private readonly ComplexEditor editor = new();
+        private readonly TokenEditor editor = new();
 
         private void InputRichTextBox_TextChanged(object sender, EventArgs e) {
             // if (sender is not RichTextBox richTextBox) return;
@@ -23,9 +24,9 @@ namespace Calculator
         private void UpdateUI() {
             try {
                 ANumber value = editor.Value;
-                outputLabel.Text = "Type: " + value.GetType().Name + "\n" + "Raw: " + value.Raw;
+                outputLabel.Text = "Type: " + value.GetType().Name + "\nRaw: " + value.Raw + "\n" + editor.Debug();
             } catch (Exception err) {
-                outputLabel.Text = "Error: " + err.Message;
+                outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
             }
         }
 
@@ -54,7 +55,8 @@ namespace Calculator
             {'A', Keys.A | Keys.Shift}, {'B', Keys.B | Keys.Shift}, {'C', Keys.C | Keys.Shift},
             {'D', Keys.D | Keys.Shift}, {'E', Keys.E | Keys.Shift}, {'F', Keys.F | Keys.Shift},
             {'-', Keys.OemMinus}, {'\b', Keys.Back}, {'\x7f', Keys.Delete},
-            {',', Keys.Oemcomma}, {'.', Keys.OemPeriod}, {'/', Keys.Oem2}, {'i', Keys.I}
+            {',', Keys.Oemcomma}, {'.', Keys.OemPeriod}, {'/', Keys.Oem2}, {'i', Keys.I},
+            {' ', Keys.Space},
         };
 
         private void Remover(RichTextBox richTextBox, int count) {
@@ -80,7 +82,8 @@ namespace Calculator
             int start = richTextBox.SelectionStart;
             text = text.Replace("+i", "i").Replace("-i", "i-");
             foreach (char letter in text) {
-                KeyEventArgs keyData = new(char2keys[letter]);
+                if (!char2keys.TryGetValue(letter, out Keys value)) continue;
+                KeyEventArgs keyData = new(value);
                 Keys modifiers = keyData.Modifiers;
 
                 bool shift = ((modifiers & Keys.Shift) != 0);
