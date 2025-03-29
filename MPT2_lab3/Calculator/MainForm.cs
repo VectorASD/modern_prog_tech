@@ -1,7 +1,6 @@
 using Calculator.editors;
 using ConsoleApp;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Calculator {
     public partial class MainForm : Form {
@@ -21,13 +20,15 @@ namespace Calculator {
 
         }
 
-        private void UpdateUI() {
+        private void UpdateUI(RichTextBox? rich = null) {
+            rich ??= inputRichTextBox;
             try {
                 ANumber value = editor.Value;
                 outputLabel.Text = "Type: " + value.GetType().Name + "\nRaw: " + value.Raw + "\n" + editor.Debug();
             } catch (Exception err) {
                 outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
             }
+            editor.Colorize(rich);
         }
 
         // ѕо прежнему, сначала KeyPress, потом KeyDown
@@ -54,15 +55,17 @@ namespace Calculator {
             {'a', Keys.A}, {'b', Keys.B}, {'c', Keys.C}, {'d', Keys.D}, {'e', Keys.E}, {'f', Keys.F},
             {'A', Keys.A | Keys.Shift}, {'B', Keys.B | Keys.Shift}, {'C', Keys.C | Keys.Shift},
             {'D', Keys.D | Keys.Shift}, {'E', Keys.E | Keys.Shift}, {'F', Keys.F | Keys.Shift},
-            {'-', Keys.OemMinus}, {'\b', Keys.Back}, {'\x7f', Keys.Delete},
-            {',', Keys.Oemcomma}, {'.', Keys.OemPeriod}, {'/', Keys.Oem2}, {'i', Keys.I},
+            {'-', Keys.Subtract}, {'\b', Keys.Back}, {'\x7f', Keys.Delete},
+            {',', Keys.Oemcomma}, {'.', Keys.Decimal}, {'/', Keys.Divide}, {'i', Keys.I},
             {' ', Keys.Space},
+            {'+', Keys.Add}, {'*', Keys.Multiply}, {'S', Keys.S},
         };
 
         private void Remover(RichTextBox richTextBox, int count) {
             int start = richTextBox.SelectionStart + count;
             while (count > 0) {
-                /*string text =*/ editor.Handler(Keys.Back, false, false, false, start, out int delta);
+                /*string text =*/
+                editor.Handler(Keys.Back, false, false, false, start, out int delta);
                 // MessageBox.Show($"start: {start}\ndelta: {delta}\ntext: {text}");
                 if (delta >= 0) break; // Ќа вс€кий случай, от вечного зацикливани€ ;'-}
                 start += delta;
@@ -80,7 +83,7 @@ namespace Calculator {
 
         private void PasteText(RichTextBox richTextBox, string text) {
             int start = richTextBox.SelectionStart;
-            text = text.Replace("+i", "i").Replace("-i", "i-");
+            text = text.Replace("+i", "i").Replace("-i", "i-").Replace("Sqr", "S");
             foreach (char letter in text) {
                 if (!char2keys.TryGetValue(letter, out Keys value)) continue;
                 KeyEventArgs keyData = new(value);
@@ -99,6 +102,7 @@ namespace Calculator {
             if (sender is not RichTextBox rich) return;
 
             // MessageBox.Show("KeyDown: '" + rich.Text + "', " + e.KeyValue + ", '" + e.KeyData + "', " + e.KeyCode);
+            keyLabel.Text = "\n" + e.KeyData;
 
             Keys modifiers = e.Modifiers;
             bool shift = ((modifiers & Keys.Shift) != 0) ^ Console.CapsLock;
@@ -106,6 +110,14 @@ namespace Calculator {
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
             Keys keyCode = e.KeyCode;
+            Keys origKeyCode = keyCode;
+            if (keyCode == Keys.OemPeriod) keyCode = Keys.Decimal; // NumLock mode + Delete = Decimal O_o
+            else if (keyCode == Keys.OemMinus) keyCode = Keys.Subtract;
+            else if (keyCode >= Keys.NumPad0 && keyCode <= Keys.NumPad9) keyCode = keyCode - Keys.NumPad0 + Keys.D0;
+            else if (keyCode == Keys.Oemplus) keyCode = Keys.Add;
+            else if (keyCode == Keys.Oem2) keyCode = Keys.Divide;
+            else if (keyCode == Keys.D8 && shift) keyCode = Keys.Multiply; // Shift + 8 = *
+            if (keyCode != origKeyCode) keyLabel.Text += "\n-> " + (keyCode | modifiers);
 
             if (arrows.Contains(keyCode)) { } // встроенное перемещение курсора и выделение текста клавиатурой
             else if (modifier_keys.Contains(keyCode)) { } // игнорируем обработку клавиш-модификаторов (иначе ctrl сразу сбросит выделение)
@@ -131,7 +143,7 @@ namespace Calculator {
                 e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
             }
 
-            UpdateUI();
+            UpdateUI(rich);
         }
 
         private void NumSysTrackBar_ValueChanged(object sender, EventArgs e) {

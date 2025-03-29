@@ -79,16 +79,12 @@ namespace Calculator.editors {
                 return AddDigit(keyCode - Keys.D0, shift, index, out delta);
             if (keyCode >= Keys.A && keyCode <= Keys.F)
                 return AddDigit(keyCode - Keys.A + 10, shift, index, out delta);
-            if (keyCode == Keys.Left) { delta = -1; return Text; }
-            if (keyCode == Keys.Right) { delta = 1; return Text; }
-            if (keyCode == Keys.OemMinus)
+            if (keyCode == Keys.Subtract)
                 return AddSign(index, out delta);
             if (keyCode == Keys.Back)
                 return Backspace(index - 1, out delta);
             if (keyCode == Keys.Delete)
                 return Backspace(index, out _);
-
-            // MessageBox.Show("Handler: " + keyCode);
 
             delta = 0;
             return Text;

@@ -1,4 +1,6 @@
-﻿namespace Calculator
+﻿using System.Windows.Forms;
+
+namespace Calculator
 {
     partial class MainForm
     {
@@ -32,14 +34,17 @@
             outputLabel = new Label();
             numSysTrackBar = new TrackBar();
             numSysNumericUpDown = new NumericUpDown();
+            keyLabel = new Label();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
+            flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // inputRichTextBox
             // 
             inputRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            inputRichTextBox.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            inputRichTextBox.Font = new Font("Courier New", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             inputRichTextBox.ForeColor = Color.RoyalBlue;
             inputRichTextBox.Location = new Point(12, 12);
             inputRichTextBox.Name = "inputRichTextBox";
@@ -54,6 +59,7 @@
             // 
             outputLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             outputLabel.AutoSize = true;
+            outputLabel.BackColor = Color.Transparent;
             outputLabel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             outputLabel.Location = new Point(12, 302);
             outputLabel.Name = "outputLabel";
@@ -89,14 +95,39 @@
             numSysNumericUpDown.Value = new decimal(new int[] { 10, 0, 0, 0 });
             numSysNumericUpDown.ValueChanged += NumSysNumericUpDown_ValueChanged;
             // 
+            // keyLabel
+            // 
+            keyLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            keyLabel.AutoSize = true;
+            keyLabel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            keyLabel.Location = new Point(960, 0);
+            keyLabel.Name = "keyLabel";
+            keyLabel.RightToLeft = RightToLeft.No;
+            keyLabel.Size = new Size(21, 50);
+            keyLabel.TabIndex = 4;
+            keyLabel.Text = "\r\n?";
+            keyLabel.TextAlign = ContentAlignment.TopRight;
+            // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            flowLayoutPanel1.BackColor = SystemColors.Control;
+            flowLayoutPanel1.Controls.Add(keyLabel);
+            flowLayoutPanel1.FlowDirection = FlowDirection.RightToLeft;
+            flowLayoutPanel1.Location = new Point(12, 302);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(984, 100);
+            flowLayoutPanel1.TabIndex = 5;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1008, 411);
+            Controls.Add(outputLabel);
+            Controls.Add(flowLayoutPanel1);
             Controls.Add(numSysNumericUpDown);
             Controls.Add(numSysTrackBar);
-            Controls.Add(outputLabel);
             Controls.Add(inputRichTextBox);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "MainForm";
@@ -104,6 +135,8 @@
             Text = "Калькулятор";
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).EndInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).EndInit();
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -114,5 +147,7 @@
         private Label outputLabel;
         private TrackBar numSysTrackBar;
         private NumericUpDown numSysNumericUpDown;
+        private Label keyLabel;
+        private FlowLayoutPanel flowLayoutPanel1;
     }
 }

@@ -83,7 +83,7 @@ namespace Calculator.editors {
             delta = 0;
             int len = left.Length + 1;
 
-            if (keyCode == Keys.OemPeriod || keyCode == Keys.Oemcomma) {
+            if (keyCode == Keys.Decimal || keyCode == Keys.Oemcomma) {
                 delta = IsDotted ? (index < len ? 1 : 0) : 1;
                 if (index >= len) index--; // добавление точки в правом числе, т.е. перемещение точки ещё правее
                 if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить точку перед минусом
@@ -93,7 +93,7 @@ namespace Calculator.editors {
                 right = new(text[index..]);
                 return Text;
             }
-            if (keyCode == Keys.OemMinus)
+            if (keyCode == Keys.Subtract)
                 return AddSign(index, out delta);
 
             if (index < len || right is null) {

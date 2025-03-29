@@ -99,7 +99,7 @@ namespace Calculator.editors {
             delta = 0;
             int len = left.Length + 1;
 
-            if (keyCode == Keys.Oem2) {
+            if (keyCode == Keys.Divide) {
                 delta = IsDivided ? (index < len ? 1 : 0) : 1;
                 if (index >= len) index--; // добавление '/' в правом числе, т.е. перемещение '/' ещё правее
                 //if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить '/' перед минусом

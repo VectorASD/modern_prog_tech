@@ -127,7 +127,7 @@ namespace Calculator.editors {
                 delta = is_right ? 0 : ImagSize;
                 return Text;
             }
-            if (keyCode == Keys.OemMinus)
+            if (keyCode == Keys.Subtract)
                 return AddSign(index, out delta);
 
             if (index <= len || right is null) {
@@ -149,7 +149,8 @@ namespace Calculator.editors {
             try {
                 L = new(text[..index]);
                 R = new(text[index..]);
-                _ = L.Value; _ = R.Value; // чекер
+                try { _ = L.Value; _ = R.Value; } // чекер
+                catch (DivideByZeroException) { }
                 return true;
             } catch (FormatException) { // при перемещении 'i', выходит две точки, или две '/', игнорируем действие
                 L = R = Void;
@@ -160,7 +161,8 @@ namespace Calculator.editors {
             string text = Text + right.Text;
             try {
                 result = new(text);
-                _ = result.Value; // чекер
+                try { _ = result.Value; } // чекер
+                catch (DivideByZeroException) { }
                 return true;
             } catch (FormatException) {
                 result = Void;
