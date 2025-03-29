@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator {
-    public class NumberEditor(string init_text = ""): IEditor {
+namespace Calculator.editors {
+    public class NumberEditor(string init_text = "") : IEditor {
 
         private readonly List<char> text = [.. init_text];
         private bool negative = false;
@@ -36,7 +36,7 @@ namespace Calculator {
 
         public string AddSign(int index, out int delta) {
             negative = !negative;
-            delta = negative ? 1 : (index <= 0 ? 0 : - 1);
+            delta = negative ? 1 : index <= 0 ? 0 : -1;
             return Text;
         }
 
@@ -49,7 +49,7 @@ namespace Calculator {
                 < 10 => digit + '0',
                 _ => digit - 10 + (shift ? 'A' : 'a')
             };
-            text.Insert(index, (char) letter);
+            text.Insert(index, (char)letter);
 
             return Text;
         }
@@ -60,7 +60,7 @@ namespace Calculator {
             if (negative && index == 0) return AddSign(1, out delta);
 
             if (negative) index--;
-            if (index < 0 || index >= text.Count) {delta = 0; return Text; }
+            if (index < 0 || index >= text.Count) { delta = 0; return Text; }
 
             text.RemoveAt(index);
             delta = -1;

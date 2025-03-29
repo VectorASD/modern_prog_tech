@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator {
+namespace Calculator.editors {
     public class TokenEditor : IEditor {
         private readonly List<IEditor> tokens = [];
         private readonly List<int> Qsum = [0]; // кумулятивная сумма
@@ -93,7 +93,7 @@ namespace Calculator {
         private int Index2Idx(int index, bool space) {
             int idx = Qsum.BinarySearch(index);
             if (idx < 0) idx = ~idx - 1;
-            else if (idx > 0 && (tokens[idx - 1] is not SpaceToken ^ space)) idx--;
+            else if (idx > 0 && tokens[idx - 1] is not SpaceToken ^ space) idx--;
             return Math.Clamp(idx, 0, tokens.Count - 1);
         }
         private int Index2Idx_type2(int index, bool left) {
@@ -184,8 +184,7 @@ namespace Calculator {
                     InsertTokens(idx, [left, middle, right]);
                     return Text;
                 }
-            }
-            else if (token is ComplexEditor complex) {
+            } else if (token is ComplexEditor complex) {
                 if (space_key && complex.Slice(index, out ComplexEditor left, out ComplexEditor right)) {
                     RemoveToken(idx);
                     InsertTokens(idx, [left, new SpaceToken(), right]);

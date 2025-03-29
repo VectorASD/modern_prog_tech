@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator {
-    public class DecimalEditor: IEditor {
+namespace Calculator.editors {
+    public class DecimalEditor : IEditor {
 
         private readonly NumberEditor left = new();
         private          NumberEditor? right;

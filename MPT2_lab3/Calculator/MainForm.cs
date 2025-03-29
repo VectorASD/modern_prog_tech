@@ -1,9 +1,9 @@
+using Calculator.editors;
 using ConsoleApp;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
-namespace Calculator
-{
+namespace Calculator {
     public partial class MainForm : Form {
         public MainForm() {
             InitializeComponent();

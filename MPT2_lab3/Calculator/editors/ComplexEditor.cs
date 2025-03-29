@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator {
+namespace Calculator.editors {
     public class ComplexEditor : IEditor {
 
         private readonly RationalEditor left = new();
