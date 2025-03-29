@@ -124,9 +124,12 @@ namespace ConsoleApp {
                 if (!valid) { result = Zero; return false; }
             } else real_result = BigRational.Zero;
 
-            valid = BigRational.TryParse(stringValue[(div_idx + char_size)..], out BigRational imag_result, numSys);
-            if (!valid) { result = Zero; return false; }
-            if (negative) imag_result = -imag_result;
+            BigRational imag_result;
+            if (stringValue.Length > div_idx + char_size) {
+                valid = BigRational.TryParse(stringValue[(div_idx + char_size)..], out imag_result, numSys);
+                if (!valid) { result = Zero; return false; }
+                if (negative) imag_result = -imag_result;
+            } else imag_result = BigRational.Zero;
 
             result = new BigComplex(real_result, imag_result);
             return true;

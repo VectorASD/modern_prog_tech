@@ -12,7 +12,7 @@ namespace Calculator
 
 
 
-        private readonly RationalEditor editor = new();
+        private readonly ComplexEditor editor = new();
 
         private void InputRichTextBox_TextChanged(object sender, EventArgs e) {
             // if (sender is not RichTextBox richTextBox) return;
@@ -54,15 +54,17 @@ namespace Calculator
             {'A', Keys.A | Keys.Shift}, {'B', Keys.B | Keys.Shift}, {'C', Keys.C | Keys.Shift},
             {'D', Keys.D | Keys.Shift}, {'E', Keys.E | Keys.Shift}, {'F', Keys.F | Keys.Shift},
             {'-', Keys.OemMinus}, {'\b', Keys.Back}, {'\x7f', Keys.Delete},
-            {',', Keys.Oemcomma}, {'.', Keys.OemPeriod}, {'/', Keys.Oem2}
+            {',', Keys.Oemcomma}, {'.', Keys.OemPeriod}, {'/', Keys.Oem2}, {'i', Keys.I}
         };
 
         private void Remover(RichTextBox richTextBox, int count) {
             int start = richTextBox.SelectionStart + count;
-            while (count-- > 0) {
+            while (count > 0) {
                 /*string text =*/ editor.Handler(Keys.Back, false, false, false, start, out int delta);
                 // MessageBox.Show($"start: {start}\ndelta: {delta}\ntext: {text}");
+                if (delta >= 0) break; // Ќа вс€кий случай, от вечного зацикливани€ ;'-}
                 start += delta;
+                count += delta;
             }
             richTextBox.Text = editor.Text;
             richTextBox.SelectionStart = start;
@@ -76,6 +78,7 @@ namespace Calculator
 
         private void PasteText(RichTextBox richTextBox, string text) {
             int start = richTextBox.SelectionStart;
+            text = text.Replace("+i", "i").Replace("-i", "i-");
             foreach (char letter in text) {
                 KeyEventArgs keyData = new(char2keys[letter]);
                 Keys modifiers = keyData.Modifiers;

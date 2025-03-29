@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Calculator {
     public class RationalEditor : IEditor {
@@ -20,7 +19,7 @@ namespace Calculator {
             set {
                 int pos = value.IndexOf(BigRational.DIV_CHAR);
                 if (pos == -1) { left.Text = value; right = null; return; }
-                if (value.IndexOf(BigDecimal.DOT_CHAR, pos + 1) != -1) throw new FormatException("Две и более точек недопустимо");
+                if (value.IndexOf(BigRational.DIV_CHAR, pos + 1) != -1) throw new FormatException("Два и более делителя недопустимо");
                 left.Text = value[..pos];
                 right = new(value[(pos + 1)..]);
             }
@@ -44,7 +43,7 @@ namespace Calculator {
 
 
         public override string ToString() => Text;
-        public bool IsZero => Value.IsZero;
+        public bool IsZero => Value.IsZero; // unused
 
         public string AddSign(int index, out int delta) {
             int len = left.Length + 1;
@@ -106,7 +105,10 @@ namespace Calculator {
                 //if (left.IsNegative && index == 0) { index++; delta++; } // попытка добавить '/' перед минусом
 
                 bool negative_right = right is not null && right.IsNegative;
-                if (negative_right) { right?.AddSign(0, out _); index = Math.Max(0, index - 1); }
+                if (negative_right) {
+                    right?.AddSign(0, out _);
+                    if (index >= len) { index--; delta--; }
+                }
                 string text = IsDivided ? $"{left}{right}" : left.Text;
                 DecimalEditor new_right;
                 try {
@@ -115,9 +117,9 @@ namespace Calculator {
                 } catch (FormatException) { // при перемещении '/', выходит две точки, игнорируем действие
                     if (negative_right) right?.AddSign(0, out _); // возврат минуса назад
                     delta = 0; return Text;
-                } 
+                }
                 right = new_right;
-                if (negative_right) right?.AddSign(0, out _);
+                if (negative_right) right.AddSign(0, out _);
                 return Text;
             }
 

@@ -43,7 +43,7 @@ namespace Calculator {
 
 
         public override string ToString() => Text;
-        public bool IsZero => Value.IsZero;
+        public bool IsZero => Value.IsZero; // unused
 
         public string AddSign(int index, out int delta) {
             left.AddSign(index, out delta);

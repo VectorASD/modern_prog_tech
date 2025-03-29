@@ -30,7 +30,7 @@ namespace Calculator {
 
 
         public override string ToString() => Text;
-        public bool IsZero => Value.IsZero;
+        public bool IsZero => Value.IsZero; // unused
 
         // private bool FirstZero => text.Count > 0 && text[0] == '0';
 
