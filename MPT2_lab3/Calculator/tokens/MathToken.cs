@@ -19,6 +19,14 @@ namespace Calculator.tokens {
         public static readonly MathToken divide   = new("/");
         public static readonly MathToken inverse  = new("1/");
         public static readonly MathToken square   = new("Sqr");
+        public static readonly MathToken L_sqbr   = new("(");
+        public static readonly MathToken R_sqbr   = new(")");
+
+        private static readonly MathToken[] partOfNumber = [subtract, inverse, divide];
+        public static bool PartOfNumber(IEditor token) =>
+            token is MathToken math && partOfNumber.Contains(math);
+
+
 
         public bool Equals(MathToken? other) =>
             Text == (other ?? Default).Text; // IEquatable<MathToken>
