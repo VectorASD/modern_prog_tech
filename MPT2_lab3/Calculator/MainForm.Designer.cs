@@ -51,6 +51,7 @@ namespace Calculator
             inputRichTextBox.Size = new Size(984, 236);
             inputRichTextBox.TabIndex = 0;
             inputRichTextBox.Text = "";
+            inputRichTextBox.SelectionChanged += InputRichTextBox_SelectionChanged;
             inputRichTextBox.TextChanged += InputRichTextBox_TextChanged;
             inputRichTextBox.KeyDown += InputRichTextBox_KeyDown;
             inputRichTextBox.KeyPress += InputRichTextBox_KeyPress;

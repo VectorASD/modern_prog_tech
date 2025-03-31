@@ -35,10 +35,15 @@ namespace Calculator.tokens {
 
 
 
-        public string Text { get => name; set => throw new NotImplementedException(); }
-
+        public string Text {
+            get => name;
+            set => throw new NotImplementedException();
+        }
         public ANumber Value => throw new NotImplementedException();
-        public int NumSys { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int NumSys {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
         public int Length => name.Length;
         public bool IsNegative => false;
 

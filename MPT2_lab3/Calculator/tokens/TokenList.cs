@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,14 +30,14 @@ namespace Calculator.tokens {
 
         public ANumber Value => tokens.Count == 0 ? BigInt.Zero : tokens.First().Value;
 
-        private int numSys = 10;
+        private int lastIndex = 0;
+        public void SetLastIndex(int index) => lastIndex = index;
         public int NumSys {
-            get { return numSys; }
-            set { numSys = value; }
+            get => tokens[Index2Idx(lastIndex)].NumSys;
+            set => tokens[Index2Idx(lastIndex)].NumSys = value;
         }
         public int Length => tokens.Sum(x => x.Length);
         public bool IsNegative => throw new NotImplementedException();
-
         public bool IsZero => throw new NotImplementedException();
 
 
@@ -148,13 +149,15 @@ namespace Calculator.tokens {
             if (combine) CombineTokenPair(idx);
         }
 
-        public int Index2Idx(int index, bool space) {
+        public int Index2Idx(int index, bool space = false) {
+            if (tokens.Count == 0) throw new NotImplementedException();
+
             int idx = Qsum.BinarySearch(index);
             if (idx < 0) idx = ~idx - 1;
             else if (idx > 0 && tokens[idx - 1] is not SpaceToken ^ space) idx--;
             return Math.Clamp(idx, 0, tokens.Count - 1);
         }
-        public int Index2Idx_type2(int index, bool left) {
+        public int Index2Idx_type2(int index, bool left = true) {
             int idx = Qsum.BinarySearch(index);
             if (idx < 0) idx = ~idx - 1;
             else if (idx > 0 && left) idx--;

@@ -9,10 +9,15 @@ namespace Calculator.tokens {
     public class SpaceToken(int count = 1) : IEditor {
         private int count = count;
 
-        public string Text { get => "".PadRight(count); set => throw new NotImplementedException(); }
-
+        public string Text {
+            get => "".PadRight(count);
+            set => throw new NotImplementedException();
+        }
         public ANumber Value => throw new NotImplementedException();
-        public int NumSys { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int NumSys {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
         public int Length => count;
         public bool IsNegative => false;
 

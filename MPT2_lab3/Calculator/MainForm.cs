@@ -28,7 +28,6 @@ namespace Calculator {
             } catch (Exception err) {
                 outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
             }
-            editor.Colorize(rich);
         }
 
         // По прежнему, сначала KeyPress, потом KeyDown
@@ -144,7 +143,10 @@ namespace Calculator {
             }
 
             UpdateUI(rich);
+            editor.Colorize(rich);
         }
+
+
 
         private void NumSysTrackBar_ValueChanged(object sender, EventArgs e) {
             if (sender is not TrackBar trackBar) return;
@@ -162,6 +164,24 @@ namespace Calculator {
             numSysTrackBar.Value = value;
             editor.NumSys = value;
             UpdateUI();
+        }
+
+        private void InputRichTextBox_SelectionChanged(object sender, EventArgs e) {
+            if (sender is not RichTextBox rich) return;
+
+            editor.SetLastIndex(rich.SelectionStart);
+            try {
+                int value = editor.NumSys;
+                numSysTrackBar.Value = value;
+                numSysNumericUpDown.Value = value;
+                UpdateUI();
+
+                numSysTrackBar.Enabled = true;
+                numSysNumericUpDown.Enabled = true;
+            } catch (NotImplementedException) {
+                numSysTrackBar.Enabled = false;
+                numSysNumericUpDown.Enabled = false;
+            }
         }
     }
 }

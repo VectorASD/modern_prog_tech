@@ -10,8 +10,12 @@ using System.Threading.Tasks;
 
 namespace Calculator.editors {
     public class TokenEditor : IEditor {
-        private readonly TokenList tokens = new();
-        private int numSys = 10;
+
+        private readonly TokenList tokens = [];
+        // O_o, видимо, именно IEnumerable позволяет делать такую инициализацию
+        // Убирание IEnumerable подтвердило это. Тип становится конструируемым за счёт IEnumerable
+
+
 
         public string Text {
             get => tokens.Text;
@@ -23,9 +27,10 @@ namespace Calculator.editors {
         }
 
         public ANumber Value => tokens.Value;
+        public void SetLastIndex(int index) => tokens.SetLastIndex(index);
         public int NumSys {
-            get { return numSys; }
-            set { numSys = value; }
+            get => tokens.NumSys;
+            set => tokens.NumSys = value;
         }
         public int Length => tokens.Length;
         public bool IsNegative => throw new NotImplementedException();
@@ -46,7 +51,7 @@ namespace Calculator.editors {
         public string AddZero(bool shift, int index, out int delta) => AddDigit(0, shift, index, out delta); // unused
 
         public string Backspace(int index, out int delta) {
-            int idx = tokens.Index2Idx_type2(index, true);
+            int idx = tokens.Index2Idx_type2(index);
             index -= tokens.Qsum_get(idx);
             if (index <= 0) { delta = 0; return Text; }
 
@@ -135,7 +140,7 @@ namespace Calculator.editors {
 
                     SpaceToken left = new(index);
                     SpaceToken right = new(size - index);
-                    tokens.RemoveAt(idx);
+                    tokens.RemoveAt(idx, false);
                     tokens.InsertRange(idx, [left, middle, right]);
                     return Text;
                 }
