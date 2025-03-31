@@ -15,14 +15,43 @@ namespace Calculator {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        public void BeginUpdate() {
-            SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
-            OldEventMask = (IntPtr) SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+        public bool updateMode = false;
+        private int updateLevel = 0;
+
+        private void BeginUpdate() {
+            if (!updateMode) {
+                SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+                OldEventMask = (IntPtr)SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+                updateMode = true;
+            }
+            updateLevel++;
         }
 
-        public void EndUpdate() {
-            SendMessage(Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
-            SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, OldEventMask);
+        private void EndUpdate() {
+            if (!updateMode) return;
+
+            if (--updateLevel <= 0) {
+                SendMessage(Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
+                SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, OldEventMask);
+                updateMode = false;
+            }
+        }
+
+        public static void Check() {
+            MyRichTextBox rich = new(); // здесь ставить точку останова
+            rich.Updater(() => {
+                rich.Updater(() => {
+                    rich.Updater(() => {
+                    });
+                });
+            });
+        }
+
+        public void Updater(Action func) {
+            try {
+                BeginUpdate();
+                func();
+            } finally { EndUpdate(); }
         }
 
         protected override void OnLostFocus(EventArgs e) {

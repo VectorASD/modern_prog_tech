@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Calculator.editors {
     public class TokenEditor : IEditor {
@@ -29,7 +30,7 @@ namespace Calculator.editors {
         }
 
         public ANumber Value => tokens.Value;
-        public void SetLastIndex(int index) => tokens.SetLastIndex(index);
+        public void SetLastIndex(int index) => tokens.LastIndex = index;
         public int NumSys {
             get => tokens.NumSys;
             set => tokens.NumSys = value;
@@ -157,8 +158,9 @@ namespace Calculator.editors {
                 MathToken? math_token = keyCode != Keys.Subtract && keyCode != Keys.Divide ? KeyCode_to_MathToken(keyCode, shift) : null;
                 if ((space_key || math_token is not null) && complex.Slice(index, out ComplexEditor left, out ComplexEditor right)) {
                     tokens.RemoveAt(idx, false);
-                    tokens.InsertRange(idx, [left, math_token is not null ? math_token : new SpaceToken(), right]);
-                    delta = 1;
+                    IEditor new_token = math_token is not null ? math_token : new SpaceToken();
+                    tokens.InsertRange(idx, [left, new_token, right]);
+                    delta = new_token.Length;
                     return Text;
                 }
                 token.Handler(keyCode, shift, ctrl, alt, index, out delta);
@@ -184,7 +186,9 @@ namespace Calculator.editors {
 
 
         private class Token(RichTextBox rich, int start, int length) {
-            public void Red() {
+            public void Red(int current) {
+                if (start <= current && current - start <= length) return;
+
                 rich.Select(start, length);
                 rich.SelectionBackColor = Color.Red;
             }
@@ -194,10 +198,11 @@ namespace Calculator.editors {
             int saved_length = rich.SelectionLength;
             int idx = 0;
 
-            IEditor prev_token = MathToken.L_sqbr;
+            IEditor? prev_token = null;
             Token? last_token = null;
             int level = 0;
             List<Token> chain = [];
+            int current = tokens.LastIndex;
 
             foreach (IEditor token in tokens) {
                 int start = tokens.Qsum_get(idx);
@@ -209,21 +214,27 @@ namespace Calculator.editors {
 
                 bool error = false;
                 if (token is not SpaceToken) {
-                    if (MathToken.BinaryOperation(prev_token) && MathToken.BinaryOperation(token)) error = true;
-                    if (prev_token is ComplexEditor && token is ComplexEditor) error = true;
+                    if (prev_token is null) {
+                        if (MathToken.BinaryOperation(token)) error = true;
+                    } else {
+                        if (MathToken.BinaryOperation(prev_token) && MathToken.BinaryOperation(token)) error = true;
+                        if (prev_token is ComplexEditor && token is ComplexEditor) error = true;
+                    }
                     // if (prev_token == MathToken.L_sqbr && token == MathToken.R_sqbr) error = true;
                     if (level < 0) { level = 0; error = true; }
 
                     if (MathToken.UnaryOperation(token)) chain.Add(new Token(rich, start, length));
                     else {
                         if (token is not ComplexEditor && token != MathToken.L_sqbr)
-                            foreach (var err_token in chain) err_token.Red();
+                            foreach (var err_token in chain) err_token.Red(current);
                         chain.Clear();
                     }
 
                     prev_token = token;
                     last_token = token is MathToken && !MathToken.Bracket(token) ? new Token(rich, start, length) : null;
                 }
+
+                if (error && start <= current && current <= end) error = false;
 
                 rich.Select(start, length);
                 rich.SelectionBackColor = error ? Color.Red : token switch {
@@ -238,8 +249,8 @@ namespace Calculator.editors {
                 };
             }
 
-            foreach (var err_token in chain) err_token.Red();
-            last_token?.Red();
+            foreach (var err_token in chain) err_token.Red(current);
+            last_token?.Red(current);
 
             rich.Select(saved_start, saved_length);
         }

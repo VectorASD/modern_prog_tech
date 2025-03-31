@@ -38,6 +38,10 @@ namespace Calculator {
             }
             memoryState.Text = memory.State;
         }
+        private void UpdateColor() {
+            MyRichTextBox rich = inputRichTextBox;
+            rich.Updater(() => editor.Colorize(rich));
+        }
 
         // ѕо прежнему, сначала KeyPress, потом KeyDown
         // e.Handled блокирует ввод только в KeyPress
@@ -70,7 +74,7 @@ namespace Calculator {
             {'(', Keys.D9 | Keys.Shift}, {')', Keys.D0 | Keys.Shift},
         };
 
-        private void Remover(RichTextBox richTextBox, int count) {
+        private void Remover(MyRichTextBox richTextBox, int count) {
             int start = richTextBox.SelectionStart + count;
             while (count > 0) {
                 /*string text =*/
@@ -82,7 +86,7 @@ namespace Calculator {
             }
             richTextBox.Text = editor.Text;
             richTextBox.SelectionStart = start;
-            InputRichTextBox_SelectionChanged(richTextBox, EventArgs.Empty); // другого состо€ни€ у EventArgs нет ;'-}
+            CheckSelection(richTextBox);
         }
 
         private static void CopyText(RichTextBox richTextBox) {
@@ -91,7 +95,7 @@ namespace Calculator {
             Clipboard.SetText(text);
         }
 
-        private void PasteText(RichTextBox richTextBox, string text) {
+        private void PasteText(MyRichTextBox richTextBox, string text) {
             int start = richTextBox.SelectionStart;
             text = text.Replace("+i", "i").Replace("-i", "i-").Replace("Sqr", "S");
             foreach (char letter in text) {
@@ -106,7 +110,7 @@ namespace Calculator {
             }
             richTextBox.Text = editor.Text;
             richTextBox.SelectionStart = start;
-            InputRichTextBox_SelectionChanged(richTextBox, EventArgs.Empty);
+            CheckSelection(richTextBox);
         }
 
         private void InputRichTextBox_KeyDown(object sender, KeyEventArgs e) {
@@ -134,9 +138,7 @@ namespace Calculator {
             if (modifier_keys.Contains(keyCode)) return; // игнорируем обработку клавиш-модификаторов (иначе ctrl сразу сбросит выделение)
             if (ctrl && (keyCode == Keys.C || keyCode == Keys.A)) return; // встроенный Ctrl + A и Ctrl + C
 
-            try {
-                rich.BeginUpdate(); // сработало!!!!!
-
+            rich.Updater(() => { // сработало!!!!!
                 if (rich.SelectionLength > 0 && remove_keys.Contains(keyCode)) { // удаление выделенного текста
                     if (keyCode == Keys.X) CopyText(rich);
                     int count = rich.SelectionLength;
@@ -155,15 +157,13 @@ namespace Calculator {
                     int start = rich.SelectionStart;
                     rich.Text = editor.Handler(keyCode, shift, ctrl, alt, start, out int delta);
                     rich.SelectionStart = Math.Max(0, start + delta);
-                    InputRichTextBox_SelectionChanged(rich, EventArgs.Empty);
+                    CheckSelection(rich);
                     e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
                 }
 
                 UpdateUI();
                 editor.Colorize(rich);
-            } finally {
-                rich.EndUpdate();
-            }
+            });
         }
 
 
@@ -182,6 +182,7 @@ namespace Calculator {
             numSysTrackBar.Value = numSys;
             editor.NumSys = numSys;
             UpdateUI();
+            UpdateColor();
 
             if (digit_buttons is null) return;
             for (int i = 0; i < 16; i++)
@@ -200,20 +201,22 @@ namespace Calculator {
             SetValue(value);
         }
 
-        private void InputRichTextBox_SelectionChanged(object sender, EventArgs e) {
-            if (sender is not RichTextBox rich) return;
-
+        private void CheckSelection(MyRichTextBox rich) {
             editor.SetLastIndex(rich.SelectionStart);
             try {
                 int value = editor.NumSys;
                 SetValue(value);
 
-                numSysTrackBar.Enabled = true;
-                numSysNumericUpDown.Enabled = true;
+                numSysTrackBar.Enabled = numSysNumericUpDown.Enabled = true;
             } catch (NotImplementedException) {
-                numSysTrackBar.Enabled = false;
-                numSysNumericUpDown.Enabled = false;
+                numSysTrackBar.Enabled = numSysNumericUpDown.Enabled = false;
+                UpdateColor();
             }
+        }
+        private void InputRichTextBox_SelectionChanged(object sender, EventArgs e) {
+            if (sender is not MyRichTextBox rich || rich.updateMode || rich.SelectionLength > 0) return;
+
+            CheckSelection(rich);
         }
 
 
