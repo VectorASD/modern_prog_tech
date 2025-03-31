@@ -77,6 +77,7 @@ namespace Calculator {
             }
             richTextBox.Text = editor.Text;
             richTextBox.SelectionStart = start;
+            InputRichTextBox_SelectionChanged(richTextBox, EventArgs.Empty); // другого состояния у EventArgs нет ;'-}
         }
 
         private static void CopyText(RichTextBox richTextBox) {
@@ -94,12 +95,13 @@ namespace Calculator {
                 Keys modifiers = keyData.Modifiers;
 
                 bool shift = ((modifiers & Keys.Shift) != 0);
-                Keys keyCode = keyData.KeyCode;
+                Keys keyCode = (Keys) keyData.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
                 editor.Handler(keyCode, shift, false, false, start, out int delta);
                 start += delta;
             }
             richTextBox.Text = editor.Text;
             richTextBox.SelectionStart = start;
+            InputRichTextBox_SelectionChanged(richTextBox, EventArgs.Empty);
         }
 
         private void InputRichTextBox_KeyDown(object sender, KeyEventArgs e) {
@@ -113,7 +115,7 @@ namespace Calculator {
             bool ctrl = (modifiers & Keys.Control) != 0;
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
-            Keys keyCode = e.KeyCode;
+            Keys keyCode = (Keys) e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
             Keys origKeyCode = keyCode;
             if (keyCode == Keys.OemPeriod) keyCode = Keys.Decimal; // NumLock mode + Delete = Decimal O_o
             else if (keyCode == Keys.OemMinus) keyCode = Keys.Subtract;
@@ -148,6 +150,7 @@ namespace Calculator {
                     int start = rich.SelectionStart;
                     rich.Text = editor.Handler(keyCode, shift, ctrl, alt, start, out int delta);
                     rich.SelectionStart = Math.Max(0, start + delta);
+                    InputRichTextBox_SelectionChanged(rich, EventArgs.Empty);
                     e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
                 }
 
@@ -227,10 +230,6 @@ namespace Calculator {
         private void RadioButtonShift_Click(object sender, EventArgs e) {
             if (sender is RadioButton radioButton)
                 radioButton.Checked = keyboard_shift;
-        }
-
-        private void ButtonInv_Click(object sender, EventArgs e) {
-
         }
     }
 }

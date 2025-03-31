@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Calculator.editors {
     public class TokenEditor : IEditor {
@@ -97,6 +98,8 @@ namespace Calculator.editors {
                 Keys.Multiply => MathToken.multiply,
                 Keys.Divide   => MathToken.divide,
                 Keys.S        => MathToken.square,
+                KeysEx.AddInv      => MathToken.inverse,
+                KeysEx.AddSubtract => MathToken.subtract,
                 _ => null,
             };
         }

@@ -154,7 +154,7 @@ namespace Calculator.tokens {
 
             int idx = Qsum.BinarySearch(index);
             if (idx < 0) idx = ~idx - 1;
-            else if (idx > 0 && tokens[idx - 1] is not SpaceToken ^ space) idx--;
+            else if (idx > 0 && tokens[idx - 1] is ComplexEditor ^ space) idx--;
             return Math.Clamp(idx, 0, tokens.Count - 1);
         }
         public int Index2Idx_type2(int index, bool left = true) {
