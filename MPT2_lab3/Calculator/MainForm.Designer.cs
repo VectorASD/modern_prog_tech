@@ -73,22 +73,27 @@ namespace Calculator
             editToolStripMenuItem = new ToolStripMenuItem();
             customizeToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
+            splitter = new MySplitContainer();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             keyboard.SuspendLayout();
             shiftPanel.SuspendLayout();
             menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitter).BeginInit();
+            splitter.Panel1.SuspendLayout();
+            splitter.Panel2.SuspendLayout();
+            splitter.SuspendLayout();
             SuspendLayout();
             // 
             // inputRichTextBox
             // 
-            inputRichTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            inputRichTextBox.Dock = DockStyle.Fill;
             inputRichTextBox.Font = new Font("Courier New", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             inputRichTextBox.ForeColor = Color.RoyalBlue;
-            inputRichTextBox.Location = new Point(12, 27);
+            inputRichTextBox.Location = new Point(0, 0);
             inputRichTextBox.Name = "inputRichTextBox";
-            inputRichTextBox.Size = new Size(463, 89);
+            inputRichTextBox.Size = new Size(460, 119);
             inputRichTextBox.TabIndex = 0;
             inputRichTextBox.Text = "";
             inputRichTextBox.SelectionChanged += InputRichTextBox_SelectionChanged;
@@ -138,8 +143,8 @@ namespace Calculator
             // 
             // keyLabel
             // 
-            keyLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             keyLabel.AutoSize = true;
+            keyLabel.Dock = DockStyle.Right;
             keyLabel.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             keyLabel.Location = new Point(439, 0);
             keyLabel.Name = "keyLabel";
@@ -162,7 +167,6 @@ namespace Calculator
             // 
             // keyboard
             // 
-            keyboard.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             keyboard.ColumnCount = 6;
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
@@ -200,7 +204,8 @@ namespace Calculator
             keyboard.Controls.Add(button_inv, 5, 2);
             keyboard.Controls.Add(button_back, 1, 0);
             keyboard.Controls.Add(edgePanel, 0, 0);
-            keyboard.Location = new Point(12, 122);
+            keyboard.Dock = DockStyle.Fill;
+            keyboard.Location = new Point(0, 0);
             keyboard.Name = "keyboard";
             keyboard.RowCount = 6;
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
@@ -209,19 +214,19 @@ namespace Calculator
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
-            keyboard.Size = new Size(460, 243);
+            keyboard.Size = new Size(460, 211);
             keyboard.TabIndex = 6;
             // 
             // shiftPanel
             // 
-            shiftPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             shiftPanel.BorderStyle = BorderStyle.Fixed3D;
             shiftPanel.Controls.Add(radioButton_shift);
             shiftPanel.Controls.Add(button_shift);
+            shiftPanel.Dock = DockStyle.Fill;
             shiftPanel.Location = new Point(381, 1);
             shiftPanel.Margin = new Padding(1);
             shiftPanel.Name = "shiftPanel";
-            shiftPanel.Size = new Size(78, 38);
+            shiftPanel.Size = new Size(78, 33);
             shiftPanel.TabIndex = 1;
             // 
             // radioButton_shift
@@ -238,13 +243,13 @@ namespace Calculator
             // 
             // button_shift
             // 
-            button_shift.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_shift.Dock = DockStyle.Fill;
             button_shift.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_shift.ForeColor = Color.Blue;
             button_shift.Location = new Point(0, 0);
             button_shift.Margin = new Padding(1);
             button_shift.Name = "button_shift";
-            button_shift.Size = new Size(75, 35);
+            button_shift.Size = new Size(74, 29);
             button_shift.TabIndex = 30;
             button_shift.Tag = Keys.D7;
             button_shift.Text = "shift";
@@ -253,14 +258,14 @@ namespace Calculator
             // 
             // button_space
             // 
-            button_space.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             button_space.BackColor = Color.PaleTurquoise;
+            button_space.Dock = DockStyle.Fill;
             button_space.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_space.ForeColor = Color.Black;
             button_space.Location = new Point(305, 1);
             button_space.Margin = new Padding(1);
             button_space.Name = "button_space";
-            button_space.Size = new Size(74, 38);
+            button_space.Size = new Size(74, 33);
             button_space.TabIndex = 28;
             button_space.Tag = Keys.Space;
             button_space.Text = "_";
@@ -269,13 +274,13 @@ namespace Calculator
             // 
             // button_I
             // 
-            button_I.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_I.Dock = DockStyle.Fill;
             button_I.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_I.ForeColor = Color.Red;
             button_I.Location = new Point(229, 1);
             button_I.Margin = new Padding(1);
             button_I.Name = "button_I";
-            button_I.Size = new Size(74, 38);
+            button_I.Size = new Size(74, 33);
             button_I.TabIndex = 27;
             button_I.Tag = Keys.I;
             button_I.Text = "i";
@@ -284,13 +289,13 @@ namespace Calculator
             // 
             // button_delete
             // 
-            button_delete.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_delete.Dock = DockStyle.Fill;
             button_delete.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_delete.ForeColor = Color.Red;
             button_delete.Location = new Point(153, 1);
             button_delete.Margin = new Padding(1);
             button_delete.Name = "button_delete";
-            button_delete.Size = new Size(74, 38);
+            button_delete.Size = new Size(74, 33);
             button_delete.TabIndex = 26;
             button_delete.Tag = Keys.Delete;
             button_delete.Text = "Delete";
@@ -299,13 +304,13 @@ namespace Calculator
             // 
             // button_D0
             // 
-            button_D0.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D0.Dock = DockStyle.Fill;
             button_D0.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D0.ForeColor = Color.Blue;
-            button_D0.Location = new Point(77, 161);
+            button_D0.Location = new Point(77, 141);
             button_D0.Margin = new Padding(1);
             button_D0.Name = "button_D0";
-            button_D0.Size = new Size(74, 38);
+            button_D0.Size = new Size(74, 33);
             button_D0.TabIndex = 1;
             button_D0.Tag = Keys.D0;
             button_D0.Text = "0";
@@ -314,13 +319,13 @@ namespace Calculator
             // 
             // button_sign
             // 
-            button_sign.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_sign.Dock = DockStyle.Fill;
             button_sign.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_sign.ForeColor = Color.Blue;
-            button_sign.Location = new Point(153, 161);
+            button_sign.Location = new Point(153, 141);
             button_sign.Margin = new Padding(1);
             button_sign.Name = "button_sign";
-            button_sign.Size = new Size(74, 38);
+            button_sign.Size = new Size(74, 33);
             button_sign.TabIndex = 2;
             button_sign.Tag = Keys.Subtract;
             button_sign.Text = "+/-";
@@ -329,13 +334,13 @@ namespace Calculator
             // 
             // button_point
             // 
-            button_point.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_point.Dock = DockStyle.Fill;
             button_point.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_point.ForeColor = Color.Blue;
-            button_point.Location = new Point(229, 161);
+            button_point.Location = new Point(229, 141);
             button_point.Margin = new Padding(1);
             button_point.Name = "button_point";
-            button_point.Size = new Size(74, 38);
+            button_point.Size = new Size(74, 33);
             button_point.TabIndex = 3;
             button_point.Tag = Keys.Decimal;
             button_point.Text = ",";
@@ -344,13 +349,13 @@ namespace Calculator
             // 
             // button_D1
             // 
-            button_D1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D1.Dock = DockStyle.Fill;
             button_D1.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D1.ForeColor = Color.Blue;
-            button_D1.Location = new Point(77, 121);
+            button_D1.Location = new Point(77, 106);
             button_D1.Margin = new Padding(1);
             button_D1.Name = "button_D1";
-            button_D1.Size = new Size(74, 38);
+            button_D1.Size = new Size(74, 33);
             button_D1.TabIndex = 4;
             button_D1.Tag = Keys.D1;
             button_D1.Text = "1";
@@ -359,13 +364,13 @@ namespace Calculator
             // 
             // button_D2
             // 
-            button_D2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D2.Dock = DockStyle.Fill;
             button_D2.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D2.ForeColor = Color.Blue;
-            button_D2.Location = new Point(153, 121);
+            button_D2.Location = new Point(153, 106);
             button_D2.Margin = new Padding(1);
             button_D2.Name = "button_D2";
-            button_D2.Size = new Size(74, 38);
+            button_D2.Size = new Size(74, 33);
             button_D2.TabIndex = 5;
             button_D2.Tag = Keys.D2;
             button_D2.Text = "2";
@@ -374,13 +379,13 @@ namespace Calculator
             // 
             // button_D3
             // 
-            button_D3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D3.Dock = DockStyle.Fill;
             button_D3.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D3.ForeColor = Color.Blue;
-            button_D3.Location = new Point(229, 121);
+            button_D3.Location = new Point(229, 106);
             button_D3.Margin = new Padding(1);
             button_D3.Name = "button_D3";
-            button_D3.Size = new Size(74, 38);
+            button_D3.Size = new Size(74, 33);
             button_D3.TabIndex = 6;
             button_D3.Tag = Keys.D3;
             button_D3.Text = "3";
@@ -389,13 +394,13 @@ namespace Calculator
             // 
             // button_D4
             // 
-            button_D4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D4.Dock = DockStyle.Fill;
             button_D4.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D4.ForeColor = Color.Blue;
-            button_D4.Location = new Point(77, 81);
+            button_D4.Location = new Point(77, 71);
             button_D4.Margin = new Padding(1);
             button_D4.Name = "button_D4";
-            button_D4.Size = new Size(74, 38);
+            button_D4.Size = new Size(74, 33);
             button_D4.TabIndex = 7;
             button_D4.Tag = Keys.D4;
             button_D4.Text = "4";
@@ -404,13 +409,13 @@ namespace Calculator
             // 
             // button_D5
             // 
-            button_D5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D5.Dock = DockStyle.Fill;
             button_D5.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D5.ForeColor = Color.Blue;
-            button_D5.Location = new Point(153, 81);
+            button_D5.Location = new Point(153, 71);
             button_D5.Margin = new Padding(1);
             button_D5.Name = "button_D5";
-            button_D5.Size = new Size(74, 38);
+            button_D5.Size = new Size(74, 33);
             button_D5.TabIndex = 8;
             button_D5.Tag = Keys.D5;
             button_D5.Text = "5";
@@ -419,13 +424,13 @@ namespace Calculator
             // 
             // button_D6
             // 
-            button_D6.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D6.Dock = DockStyle.Fill;
             button_D6.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D6.ForeColor = Color.Blue;
-            button_D6.Location = new Point(229, 81);
+            button_D6.Location = new Point(229, 71);
             button_D6.Margin = new Padding(1);
             button_D6.Name = "button_D6";
-            button_D6.Size = new Size(74, 38);
+            button_D6.Size = new Size(74, 33);
             button_D6.TabIndex = 9;
             button_D6.Tag = Keys.D6;
             button_D6.Text = "6";
@@ -434,13 +439,13 @@ namespace Calculator
             // 
             // button_D7
             // 
-            button_D7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D7.Dock = DockStyle.Fill;
             button_D7.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D7.ForeColor = Color.Blue;
-            button_D7.Location = new Point(77, 41);
+            button_D7.Location = new Point(77, 36);
             button_D7.Margin = new Padding(1);
             button_D7.Name = "button_D7";
-            button_D7.Size = new Size(74, 38);
+            button_D7.Size = new Size(74, 33);
             button_D7.TabIndex = 10;
             button_D7.Tag = Keys.D7;
             button_D7.Text = "7";
@@ -449,13 +454,13 @@ namespace Calculator
             // 
             // button_D8
             // 
-            button_D8.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D8.Dock = DockStyle.Fill;
             button_D8.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D8.ForeColor = Color.Blue;
-            button_D8.Location = new Point(153, 41);
+            button_D8.Location = new Point(153, 36);
             button_D8.Margin = new Padding(1);
             button_D8.Name = "button_D8";
-            button_D8.Size = new Size(74, 38);
+            button_D8.Size = new Size(74, 33);
             button_D8.TabIndex = 11;
             button_D8.Tag = Keys.D8;
             button_D8.Text = "8";
@@ -464,13 +469,13 @@ namespace Calculator
             // 
             // button_D9
             // 
-            button_D9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_D9.Dock = DockStyle.Fill;
             button_D9.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_D9.ForeColor = Color.Blue;
-            button_D9.Location = new Point(229, 41);
+            button_D9.Location = new Point(229, 36);
             button_D9.Margin = new Padding(1);
             button_D9.Name = "button_D9";
-            button_D9.Size = new Size(74, 38);
+            button_D9.Size = new Size(74, 33);
             button_D9.TabIndex = 12;
             button_D9.Tag = Keys.D9;
             button_D9.Text = "9";
@@ -479,13 +484,13 @@ namespace Calculator
             // 
             // button_DA
             // 
-            button_DA.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DA.Dock = DockStyle.Fill;
             button_DA.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DA.ForeColor = Color.Blue;
-            button_DA.Location = new Point(1, 201);
+            button_DA.Location = new Point(1, 176);
             button_DA.Margin = new Padding(1);
             button_DA.Name = "button_DA";
-            button_DA.Size = new Size(74, 41);
+            button_DA.Size = new Size(74, 34);
             button_DA.TabIndex = 13;
             button_DA.Tag = Keys.A;
             button_DA.Text = "A";
@@ -494,13 +499,13 @@ namespace Calculator
             // 
             // button_DB
             // 
-            button_DB.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DB.Dock = DockStyle.Fill;
             button_DB.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DB.ForeColor = Color.Blue;
-            button_DB.Location = new Point(77, 201);
+            button_DB.Location = new Point(77, 176);
             button_DB.Margin = new Padding(1);
             button_DB.Name = "button_DB";
-            button_DB.Size = new Size(74, 41);
+            button_DB.Size = new Size(74, 34);
             button_DB.TabIndex = 14;
             button_DB.Tag = Keys.B;
             button_DB.Text = "B";
@@ -509,13 +514,13 @@ namespace Calculator
             // 
             // button_DC
             // 
-            button_DC.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DC.Dock = DockStyle.Fill;
             button_DC.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DC.ForeColor = Color.Blue;
-            button_DC.Location = new Point(153, 201);
+            button_DC.Location = new Point(153, 176);
             button_DC.Margin = new Padding(1);
             button_DC.Name = "button_DC";
-            button_DC.Size = new Size(74, 41);
+            button_DC.Size = new Size(74, 34);
             button_DC.TabIndex = 15;
             button_DC.Tag = Keys.C;
             button_DC.Text = "C";
@@ -524,13 +529,13 @@ namespace Calculator
             // 
             // button_DD
             // 
-            button_DD.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DD.Dock = DockStyle.Fill;
             button_DD.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DD.ForeColor = Color.Blue;
-            button_DD.Location = new Point(229, 201);
+            button_DD.Location = new Point(229, 176);
             button_DD.Margin = new Padding(1);
             button_DD.Name = "button_DD";
-            button_DD.Size = new Size(74, 41);
+            button_DD.Size = new Size(74, 34);
             button_DD.TabIndex = 16;
             button_DD.Tag = Keys.D;
             button_DD.Text = "D";
@@ -539,13 +544,13 @@ namespace Calculator
             // 
             // button_DE
             // 
-            button_DE.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DE.Dock = DockStyle.Fill;
             button_DE.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DE.ForeColor = Color.Blue;
-            button_DE.Location = new Point(305, 201);
+            button_DE.Location = new Point(305, 176);
             button_DE.Margin = new Padding(1);
             button_DE.Name = "button_DE";
-            button_DE.Size = new Size(74, 41);
+            button_DE.Size = new Size(74, 34);
             button_DE.TabIndex = 17;
             button_DE.Tag = Keys.E;
             button_DE.Text = "E";
@@ -554,13 +559,13 @@ namespace Calculator
             // 
             // button_DF
             // 
-            button_DF.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_DF.Dock = DockStyle.Fill;
             button_DF.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DF.ForeColor = Color.Blue;
-            button_DF.Location = new Point(381, 201);
+            button_DF.Location = new Point(381, 176);
             button_DF.Margin = new Padding(1);
             button_DF.Name = "button_DF";
-            button_DF.Size = new Size(78, 41);
+            button_DF.Size = new Size(78, 34);
             button_DF.TabIndex = 18;
             button_DF.Tag = Keys.F;
             button_DF.Text = "F";
@@ -569,13 +574,13 @@ namespace Calculator
             // 
             // button_subtract
             // 
-            button_subtract.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_subtract.Dock = DockStyle.Fill;
             button_subtract.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_subtract.ForeColor = Color.Red;
-            button_subtract.Location = new Point(305, 121);
+            button_subtract.Location = new Point(305, 106);
             button_subtract.Margin = new Padding(1);
             button_subtract.Name = "button_subtract";
-            button_subtract.Size = new Size(74, 38);
+            button_subtract.Size = new Size(74, 33);
             button_subtract.TabIndex = 19;
             button_subtract.Tag = Keys.Subtract;
             button_subtract.Text = "-";
@@ -584,13 +589,13 @@ namespace Calculator
             // 
             // button_multiply
             // 
-            button_multiply.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_multiply.Dock = DockStyle.Fill;
             button_multiply.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_multiply.ForeColor = Color.Red;
-            button_multiply.Location = new Point(305, 81);
+            button_multiply.Location = new Point(305, 71);
             button_multiply.Margin = new Padding(1);
             button_multiply.Name = "button_multiply";
-            button_multiply.Size = new Size(74, 38);
+            button_multiply.Size = new Size(74, 33);
             button_multiply.TabIndex = 20;
             button_multiply.Tag = Keys.Multiply;
             button_multiply.Text = "*";
@@ -599,13 +604,13 @@ namespace Calculator
             // 
             // button_divide
             // 
-            button_divide.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_divide.Dock = DockStyle.Fill;
             button_divide.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_divide.ForeColor = Color.Red;
-            button_divide.Location = new Point(305, 41);
+            button_divide.Location = new Point(305, 36);
             button_divide.Margin = new Padding(1);
             button_divide.Name = "button_divide";
-            button_divide.Size = new Size(74, 38);
+            button_divide.Size = new Size(74, 33);
             button_divide.TabIndex = 21;
             button_divide.Tag = Keys.Divide;
             button_divide.Text = "/";
@@ -614,13 +619,13 @@ namespace Calculator
             // 
             // button_add
             // 
-            button_add.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_add.Dock = DockStyle.Fill;
             button_add.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_add.ForeColor = Color.Red;
-            button_add.Location = new Point(305, 161);
+            button_add.Location = new Point(305, 141);
             button_add.Margin = new Padding(1);
             button_add.Name = "button_add";
-            button_add.Size = new Size(74, 38);
+            button_add.Size = new Size(74, 33);
             button_add.TabIndex = 22;
             button_add.Tag = Keys.Add;
             button_add.Text = "+";
@@ -629,13 +634,13 @@ namespace Calculator
             // 
             // button_sqr
             // 
-            button_sqr.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_sqr.Dock = DockStyle.Fill;
             button_sqr.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_sqr.ForeColor = Color.Blue;
-            button_sqr.Location = new Point(381, 41);
+            button_sqr.Location = new Point(381, 36);
             button_sqr.Margin = new Padding(1);
             button_sqr.Name = "button_sqr";
-            button_sqr.Size = new Size(78, 38);
+            button_sqr.Size = new Size(78, 33);
             button_sqr.TabIndex = 23;
             button_sqr.Tag = Keys.S;
             button_sqr.Text = "Sqr";
@@ -644,13 +649,13 @@ namespace Calculator
             // 
             // button_inv
             // 
-            button_inv.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_inv.Dock = DockStyle.Fill;
             button_inv.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_inv.ForeColor = Color.Blue;
-            button_inv.Location = new Point(381, 81);
+            button_inv.Location = new Point(381, 71);
             button_inv.Margin = new Padding(1);
             button_inv.Name = "button_inv";
-            button_inv.Size = new Size(78, 38);
+            button_inv.Size = new Size(78, 33);
             button_inv.TabIndex = 24;
             button_inv.Text = "1/";
             button_inv.UseVisualStyleBackColor = true;
@@ -658,13 +663,13 @@ namespace Calculator
             // 
             // button_back
             // 
-            button_back.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            button_back.Dock = DockStyle.Fill;
             button_back.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_back.ForeColor = Color.Red;
             button_back.Location = new Point(77, 1);
             button_back.Margin = new Padding(1);
             button_back.Name = "button_back";
-            button_back.Size = new Size(74, 38);
+            button_back.Size = new Size(74, 33);
             button_back.TabIndex = 25;
             button_back.Tag = Keys.Back;
             button_back.Text = "Back";
@@ -673,12 +678,12 @@ namespace Calculator
             // 
             // edgePanel
             // 
-            edgePanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             edgePanel.BorderStyle = BorderStyle.Fixed3D;
+            edgePanel.Dock = DockStyle.Fill;
             edgePanel.Location = new Point(0, 0);
             edgePanel.Margin = new Padding(0);
             edgePanel.Name = "edgePanel";
-            edgePanel.Size = new Size(76, 40);
+            edgePanel.Size = new Size(76, 35);
             edgePanel.TabIndex = 0;
             // 
             // menuStrip1
@@ -708,17 +713,40 @@ namespace Calculator
             aboutToolStripMenuItem.Size = new Size(65, 20);
             aboutToolStripMenuItem.Text = "Справка";
             // 
+            // splitter
+            // 
+            splitter.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            splitter.BackColor = Color.YellowGreen;
+            splitter.Location = new Point(12, 27);
+            splitter.Name = "splitter";
+            splitter.Orientation = Orientation.Horizontal;
+            // 
+            // splitter.Panel1
+            // 
+            splitter.Panel1.BackColor = SystemColors.Control;
+            splitter.Panel1.Controls.Add(inputRichTextBox);
+            splitter.Panel1MinSize = 50;
+            // 
+            // splitter.Panel2
+            // 
+            splitter.Panel2.BackColor = SystemColors.Control;
+            splitter.Panel2.Controls.Add(keyboard);
+            splitter.Panel2MinSize = 211;
+            splitter.Size = new Size(460, 338);
+            splitter.SplitterDistance = 119;
+            splitter.SplitterWidth = 8;
+            splitter.TabIndex = 8;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(487, 528);
-            Controls.Add(keyboard);
+            Controls.Add(splitter);
             Controls.Add(outputLabel);
             Controls.Add(flowLayoutPanel1);
             Controls.Add(numSysNumericUpDown);
             Controls.Add(numSysTrackBar);
-            Controls.Add(inputRichTextBox);
             Controls.Add(menuStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
@@ -735,6 +763,10 @@ namespace Calculator
             shiftPanel.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            splitter.Panel1.ResumeLayout(false);
+            splitter.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitter).EndInit();
+            splitter.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -784,5 +816,6 @@ namespace Calculator
         private RadioButton radioButton_shift;
         private Button button_shift;
         private Panel shiftPanel;
+        private MySplitContainer splitter;
     }
 }

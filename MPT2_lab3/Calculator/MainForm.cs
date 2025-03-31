@@ -62,6 +62,7 @@ namespace Calculator {
             {',', Keys.Oemcomma}, {'.', Keys.Decimal}, {'/', Keys.Divide}, {'i', Keys.I},
             {' ', Keys.Space},
             {'+', Keys.Add}, {'*', Keys.Multiply}, {'S', Keys.S},
+            {'(', Keys.D9 | Keys.Shift}, {')', Keys.D0 | Keys.Shift},
         };
 
         private void Remover(RichTextBox richTextBox, int count) {
