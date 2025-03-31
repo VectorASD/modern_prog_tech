@@ -38,6 +38,9 @@ namespace Calculator
             keyLabel = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             keyboard = new TableLayoutPanel();
+            button_Mplus = new Button();
+            button_MR = new Button();
+            button_MS = new Button();
             button_MC = new Button();
             shiftPanel = new Panel();
             radioButton_shift = new RadioButton();
@@ -77,9 +80,6 @@ namespace Calculator
             aboutToolStripMenuItem = new ToolStripMenuItem();
             memoryState = new ToolStripLabel();
             splitter = new MySplitContainer();
-            button_MS = new Button();
-            button_MR = new Button();
-            button_Mplus = new Button();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
             flowLayoutPanel1.SuspendLayout();
@@ -227,6 +227,45 @@ namespace Calculator
             keyboard.Size = new Size(456, 211);
             keyboard.TabIndex = 6;
             // 
+            // button_Mplus
+            // 
+            button_Mplus.Dock = DockStyle.Fill;
+            button_Mplus.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            button_Mplus.ForeColor = Color.DarkOrange;
+            button_Mplus.Location = new Point(1, 141);
+            button_Mplus.Margin = new Padding(1);
+            button_Mplus.Name = "button_Mplus";
+            button_Mplus.Size = new Size(74, 33);
+            button_Mplus.TabIndex = 32;
+            button_Mplus.Text = "M+";
+            button_Mplus.Click += Button_Mplus_Click;
+            // 
+            // button_MR
+            // 
+            button_MR.Dock = DockStyle.Fill;
+            button_MR.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            button_MR.ForeColor = Color.DarkOrange;
+            button_MR.Location = new Point(1, 106);
+            button_MR.Margin = new Padding(1);
+            button_MR.Name = "button_MR";
+            button_MR.Size = new Size(74, 33);
+            button_MR.TabIndex = 31;
+            button_MR.Text = "MR";
+            button_MR.Click += Button_MR_Click;
+            // 
+            // button_MS
+            // 
+            button_MS.Dock = DockStyle.Fill;
+            button_MS.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            button_MS.ForeColor = Color.DarkOrange;
+            button_MS.Location = new Point(1, 71);
+            button_MS.Margin = new Padding(1);
+            button_MS.Name = "button_MS";
+            button_MS.Size = new Size(74, 33);
+            button_MS.TabIndex = 30;
+            button_MS.Text = "MS";
+            button_MS.Click += Button_MS_Click;
+            // 
             // button_MC
             // 
             button_MC.Dock = DockStyle.Fill;
@@ -238,6 +277,7 @@ namespace Calculator
             button_MC.Size = new Size(74, 33);
             button_MC.TabIndex = 29;
             button_MC.Text = "MC";
+            button_MC.Click += Button_MC_Click;
             // 
             // shiftPanel
             // 
@@ -688,35 +728,38 @@ namespace Calculator
             // menuStrip1
             // 
             menuStrip1.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem, memoryState });
+            menuStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(483, 24);
+            menuStrip1.Size = new Size(483, 28);
             menuStrip1.TabIndex = 7;
             menuStrip1.Text = "menuStrip1";
             // 
             // editToolStripMenuItem
             // 
             editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new Size(59, 20);
+            editToolStripMenuItem.Size = new Size(59, 24);
             editToolStripMenuItem.Text = "Правка";
             // 
             // customizeToolStripMenuItem
             // 
             customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            customizeToolStripMenuItem.Size = new Size(78, 20);
+            customizeToolStripMenuItem.Size = new Size(78, 24);
             customizeToolStripMenuItem.Text = "Настройка";
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(65, 20);
+            aboutToolStripMenuItem.Size = new Size(65, 24);
             aboutToolStripMenuItem.Text = "Справка";
             // 
             // memoryState
             // 
+            memoryState.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 204);
+            memoryState.ForeColor = Color.Teal;
             memoryState.Margin = new Padding(24, 1, 0, 2);
             memoryState.Name = "memoryState";
-            memoryState.Size = new Size(12, 17);
+            memoryState.Size = new Size(17, 21);
             memoryState.Text = "?";
             // 
             // splitter
@@ -742,42 +785,6 @@ namespace Calculator
             splitter.SplitterDistance = 154;
             splitter.SplitterWidth = 8;
             splitter.TabIndex = 8;
-            // 
-            // button_MS
-            // 
-            button_MS.Dock = DockStyle.Fill;
-            button_MS.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            button_MS.ForeColor = Color.DarkOrange;
-            button_MS.Location = new Point(1, 71);
-            button_MS.Margin = new Padding(1);
-            button_MS.Name = "button_MS";
-            button_MS.Size = new Size(74, 33);
-            button_MS.TabIndex = 30;
-            button_MS.Text = "MS";
-            // 
-            // button_MR
-            // 
-            button_MR.Dock = DockStyle.Fill;
-            button_MR.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            button_MR.ForeColor = Color.DarkOrange;
-            button_MR.Location = new Point(1, 106);
-            button_MR.Margin = new Padding(1);
-            button_MR.Name = "button_MR";
-            button_MR.Size = new Size(74, 33);
-            button_MR.TabIndex = 31;
-            button_MR.Text = "MR";
-            // 
-            // button_Mplus
-            // 
-            button_Mplus.Dock = DockStyle.Fill;
-            button_Mplus.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            button_Mplus.ForeColor = Color.DarkOrange;
-            button_Mplus.Location = new Point(1, 141);
-            button_Mplus.Margin = new Padding(1);
-            button_Mplus.Name = "button_Mplus";
-            button_Mplus.Size = new Size(74, 33);
-            button_Mplus.TabIndex = 32;
-            button_Mplus.Text = "M+";
             // 
             // MainForm
             // 

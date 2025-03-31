@@ -31,9 +31,10 @@ namespace Calculator.tokens {
         public ANumber Value => tokens.Count == 0 ? BigInt.Zero : tokens.First().Value;
 
         public int LastIndex { get; set; } = 0;
+        public IEditor CurrentToken => tokens[Index2Idx(LastIndex)];
         public int NumSys {
-            get => tokens[Index2Idx(LastIndex)].NumSys;
-            set => tokens[Index2Idx(LastIndex)].NumSys = value;
+            get => CurrentToken.NumSys;
+            set => CurrentToken.NumSys = value;
         }
         public int Length => tokens.Sum(x => x.Length);
         public bool IsNegative => throw new NotImplementedException();

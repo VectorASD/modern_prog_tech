@@ -16,7 +16,7 @@ namespace Calculator {
             UpdateUI();
             inputRichTextBox.Text = editor.Text;
             InitDigitButtons();
-            
+
             foreach (Control control in this.Descendants<Control>())
                 if (control is Button || control is RadioButton) control.GotFocus += Control_GotFocus;
         }
@@ -37,6 +37,7 @@ namespace Calculator {
                 outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
             }
             memoryState.Text = memory.State;
+            button_MR.Enabled = memory.Number is not null;
         }
         private void UpdateColor() {
             MyRichTextBox rich = inputRichTextBox;
@@ -104,7 +105,7 @@ namespace Calculator {
                 Keys modifiers = keyData.Modifiers;
 
                 bool shift = ((modifiers & Keys.Shift) != 0);
-                Keys keyCode = (Keys) keyData.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
+                Keys keyCode = (Keys)keyData.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
                 editor.Handler(keyCode, shift, false, false, start, out int delta);
                 start += delta;
             }
@@ -124,7 +125,7 @@ namespace Calculator {
             bool ctrl = (modifiers & Keys.Control) != 0;
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
-            Keys keyCode = (Keys) e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
+            Keys keyCode = (Keys)e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
             Keys origKeyCode = keyCode;
             if (keyCode == Keys.OemPeriod) keyCode = Keys.Decimal; // NumLock mode + Delete = Decimal O_o
             else if (keyCode == Keys.OemMinus) keyCode = Keys.Subtract;
@@ -238,6 +239,26 @@ namespace Calculator {
         private void RadioButtonShift_Click(object sender, EventArgs e) {
             if (sender is RadioButton radioButton)
                 radioButton.Checked = keyboard_shift;
+        }
+
+        private void Button_MC_Click(object sender, EventArgs e) {
+            memory.Clear();
+            UpdateUI();
+        }
+        private void Button_MS_Click(object sender, EventArgs e) {
+            if (editor.CurrentNumber(out ANumber number))
+                memory.Number = number;
+            UpdateUI();
+        }
+        private void Button_MR_Click(object sender, EventArgs e) {
+            ANumber? number = memory.Number;
+            if (number is not null)
+                PasteText(inputRichTextBox, number.ToString());
+        }
+        private void Button_Mplus_Click(object sender, EventArgs e) {
+            if (editor.CurrentNumber(out ANumber number))
+                memory.Add(number);
+            UpdateUI();
         }
     }
 }

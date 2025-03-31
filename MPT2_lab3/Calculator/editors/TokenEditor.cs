@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Calculator.editors {
     public class TokenEditor : IEditor {
@@ -253,6 +252,34 @@ namespace Calculator.editors {
             last_token?.Red(current);
 
             rich.Select(saved_start, saved_length);
+        }
+
+
+
+        public bool CurrentToken(out IEditor token) {
+            try {
+                token = tokens.CurrentToken;
+                return true;
+            } catch (NotImplementedException) {
+                MessageBox.Show("Нет токенов", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                token = ComplexEditor.Empty;
+                return false;
+            }
+        }
+        public bool CurrentNumber(out ANumber number) {
+            if (!CurrentToken(out IEditor i_token)) {
+                number = BigInt.Zero; return false;
+            }
+            if (i_token is not ComplexEditor token) {
+                MessageBox.Show($"Операции в памяти допустимы только с числовыми токенами. Текущий выбранный тип: {i_token.GetType().Name}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                number = BigInt.Zero; return false;
+            }
+            try { number = token.Value; }
+            catch (Exception e) {
+                MessageBox.Show(e.Message, "Ошибка формата", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                number = BigInt.Zero; return false;
+            }
+            return true;
         }
     }
 }

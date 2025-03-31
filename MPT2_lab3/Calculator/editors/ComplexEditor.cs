@@ -142,7 +142,7 @@ namespace Calculator.editors {
 
 
 
-        public static readonly ComplexEditor Void = new();
+        public static readonly ComplexEditor Empty = new();
 
         public bool Slice(int index, out ComplexEditor L, out ComplexEditor R) {
             string text = Text;
@@ -155,7 +155,7 @@ namespace Calculator.editors {
                 L.NumSys = R.NumSys = NumSys;
                 return true;
             } catch (FormatException) { // при перемещении 'i', выходит две точки, или две '/', игнорируем действие
-                L = R = Void;
+                L = R = Empty;
                 return false;
             }
         }
@@ -176,7 +176,7 @@ namespace Calculator.editors {
 
                 return true;
             } catch (FormatException) {
-                result = Void;
+                result = Empty;
                 return false;
             }
         }
