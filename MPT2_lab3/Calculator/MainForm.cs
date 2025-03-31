@@ -6,8 +6,12 @@ namespace Calculator {
     public partial class MainForm : Form {
         public MainForm() {
             InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e) {
             UpdateUI();
             inputRichTextBox.Text = editor.Text;
+            InitDigitButtons();
         }
 
 
@@ -98,7 +102,7 @@ namespace Calculator {
         }
 
         private void InputRichTextBox_KeyDown(object sender, KeyEventArgs e) {
-            if (sender is not RichTextBox rich) return;
+            if (sender is not MyRichTextBox rich) return;
 
             // MessageBox.Show("KeyDown: '" + rich.Text + "', " + e.KeyValue + ", '" + e.KeyData + "', " + e.KeyCode);
             keyLabel.Text = "\n" + e.KeyData;
@@ -118,52 +122,73 @@ namespace Calculator {
             else if (keyCode == Keys.D8 && shift) keyCode = Keys.Multiply; // Shift + 8 = *
             if (keyCode != origKeyCode) keyLabel.Text += "\n-> " + (keyCode | modifiers);
 
-            if (arrows.Contains(keyCode)) { } // встроенное перемещение курсора и выделение текста клавиатурой
-            else if (modifier_keys.Contains(keyCode)) { } // игнорируем обработку клавиш-модификаторов (иначе ctrl сразу сбросит выделение)
-            else if (ctrl && (keyCode == Keys.C || keyCode == Keys.A)) { } // встроенный Ctrl + A и Ctrl + C
-            else if (rich.SelectionLength > 0 && remove_keys.Contains(keyCode)) { // удаление выделенного текста
-                if (keyCode == Keys.X) CopyText(rich);
-                int count = rich.SelectionLength;
-                Remover(rich, count);
-                e.Handled = true;
-            } else if (ctrl && keyCode == Keys.V) { // своя вставка Ctrl + V
-                int count = rich.SelectionLength;
-                if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста со вставкой
+            if (arrows.Contains(keyCode)) return; // встроенное перемещение курсора и выделение текста клавиатурой
+            if (modifier_keys.Contains(keyCode)) return; // игнорируем обработку клавиш-модификаторов (иначе ctrl сразу сбросит выделение)
+            if (ctrl && (keyCode == Keys.C || keyCode == Keys.A)) return; // встроенный Ctrl + A и Ctrl + C
 
-                PasteText(rich, Clipboard.GetText());
-                e.Handled = true;
-            } else { // обычное развитие событий
-                int count = rich.SelectionLength;
-                if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста с обычным развитием событий
+            try {
+                rich.BeginUpdate(); // сработало!!!!!
 
-                int start = rich.SelectionStart;
-                rich.Text = editor.Handler(keyCode, shift, ctrl, alt, start, out int delta);
-                rich.SelectionStart = Math.Max(0, start + delta);
-                e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
+                if (rich.SelectionLength > 0 && remove_keys.Contains(keyCode)) { // удаление выделенного текста
+                    if (keyCode == Keys.X) CopyText(rich);
+                    int count = rich.SelectionLength;
+                    Remover(rich, count);
+                    e.Handled = true;
+                } else if (ctrl && keyCode == Keys.V) { // своя вставка Ctrl + V
+                    int count = rich.SelectionLength;
+                    if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста со вставкой
+
+                    PasteText(rich, Clipboard.GetText());
+                    e.Handled = true;
+                } else { // обычное развитие событий
+                    int count = rich.SelectionLength;
+                    if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста с обычным развитием событий
+
+                    int start = rich.SelectionStart;
+                    rich.Text = editor.Handler(keyCode, shift, ctrl, alt, start, out int delta);
+                    rich.SelectionStart = Math.Max(0, start + delta);
+                    e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
+                }
+
+                UpdateUI(rich);
+                editor.Colorize(rich);
+            } finally {
+                rich.EndUpdate();
             }
-
-            UpdateUI(rich);
-            editor.Colorize(rich);
         }
 
 
 
+        private Button[]? digit_buttons = null;
+        private void InitDigitButtons() {
+            digit_buttons = [
+                button_D0, button_D1, button_D2, button_D3,
+                button_D4, button_D5, button_D6, button_D7,
+                button_D8, button_D9, button_DA, button_DB,
+                button_DC, button_DD, button_DE, button_DF,
+            ];
+        }
+        private void SetValue(int numSys) {
+            numSysNumericUpDown.Value = numSys;
+            numSysTrackBar.Value = numSys;
+            editor.NumSys = numSys;
+            UpdateUI();
+
+            if (digit_buttons is null) return;
+            for (int i = 0; i < 16; i++)
+                digit_buttons[i].Enabled = i < numSys;
+        }
         private void NumSysTrackBar_ValueChanged(object sender, EventArgs e) {
             if (sender is not TrackBar trackBar) return;
 
-            int value = trackBar.Value;
-            numSysNumericUpDown.Value = value;
-            editor.NumSys = value;
-            UpdateUI();
+            SetValue(trackBar.Value);
         }
 
         private void NumSysNumericUpDown_ValueChanged(object sender, EventArgs e) {
             if (sender is not NumericUpDown numericUpDown) return;
 
             int value = Convert.ToInt32(Math.Floor(numericUpDown.Value));
-            numSysTrackBar.Value = value;
-            editor.NumSys = value;
-            UpdateUI();
+            SetValue(value);
         }
 
         private void InputRichTextBox_SelectionChanged(object sender, EventArgs e) {
@@ -172,9 +197,7 @@ namespace Calculator {
             editor.SetLastIndex(rich.SelectionStart);
             try {
                 int value = editor.NumSys;
-                numSysTrackBar.Value = value;
-                numSysNumericUpDown.Value = value;
-                UpdateUI();
+                SetValue(value);
 
                 numSysTrackBar.Enabled = true;
                 numSysNumericUpDown.Enabled = true;
@@ -182,6 +205,31 @@ namespace Calculator {
                 numSysTrackBar.Enabled = false;
                 numSysNumericUpDown.Enabled = false;
             }
+        }
+
+
+
+        bool keyboard_shift = false;
+
+        private void ButtonDigit_Click(object sender, EventArgs e) {
+            if (sender is not Button button || button.Tag is not Keys charCode) return;
+
+            if (keyboard_shift) charCode |= Keys.Shift;
+
+            InputRichTextBox_KeyDown(inputRichTextBox, new KeyEventArgs(charCode));
+        }
+
+        private void ButtonShift_Click(object sender, EventArgs e) {
+            keyboard_shift = !keyboard_shift;
+            radioButton_shift.Checked = keyboard_shift;
+        }
+        private void RadioButtonShift_Click(object sender, EventArgs e) {
+            if (sender is RadioButton radioButton)
+                radioButton.Checked = keyboard_shift;
+        }
+
+        private void ButtonInv_Click(object sender, EventArgs e) {
+
         }
     }
 }

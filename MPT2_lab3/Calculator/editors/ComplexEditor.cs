@@ -149,8 +149,10 @@ namespace Calculator.editors {
             try {
                 L = new(text[..index]);
                 R = new(text[index..]);
+                L.NumSys = R.NumSys = 16; // максимальная система счисления, чтобы не мешать чекеру
                 try { _ = L.Value; _ = R.Value; } // чекер
                 catch (DivideByZeroException) { }
+                L.NumSys = R.NumSys = NumSys;
                 return true;
             } catch (FormatException) { // при перемещении 'i', выходит две точки, или две '/', игнорируем действие
                 L = R = Void;
@@ -160,9 +162,18 @@ namespace Calculator.editors {
         public bool Combine(ComplexEditor right, out ComplexEditor result) { // ещё подошло бы название Concat, но воздержусь ;'-}
             string text = Text + right.Text;
             try {
-                result = new(text);
+                result = new(text) {
+                    NumSys = 16 // максимальная система счисления, чтобы не мешать чекеру
+                };
                 try { _ = result.Value; } // чекер
                 catch (DivideByZeroException) { }
+
+                result.NumSys = Math.Max(NumSys, right.NumSys);
+                if (NumSys != right.NumSys) {
+                    DialogResult res = MessageBox.Show($"Комбинация чисел с разной системой счисления ({NumSys} и {right.NumSys})\nдаст новому числу систему счисления: {result.NumSys}", "Подтвердить?", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (res != DialogResult.OK) return false;
+                }
+
                 return true;
             } catch (FormatException) {
                 result = Void;
