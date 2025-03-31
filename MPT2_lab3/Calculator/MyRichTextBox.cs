@@ -24,5 +24,18 @@ namespace Calculator {
             SendMessage(Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
             SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, OldEventMask);
         }
+
+        protected override void OnLostFocus(EventArgs e) {
+            base.OnLostFocus(e);
+
+            Control? item = this;
+            while (item is not null && item is not Form) item = item.Parent;
+            // if (item is Form f) MessageBox.Show("focus: " + f.ActiveControl); // причём здесь MySplitContainer?!
+
+            if (item is Form form && form.ActiveControl is Control focused) {
+                if (focused is Button) // не даёт расфокусироваться из-за кнопки
+                    Focus();
+            }
+        }
     }
 }

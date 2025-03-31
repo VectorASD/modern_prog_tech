@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using Calculator.extensions;
+using System.Windows.Forms;
 
 namespace Calculator
 {
@@ -73,6 +74,7 @@ namespace Calculator
             editToolStripMenuItem = new ToolStripMenuItem();
             customizeToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
+            memoryState = new ToolStripLabel();
             splitter = new MySplitContainer();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
@@ -97,7 +99,6 @@ namespace Calculator
             inputRichTextBox.TabIndex = 0;
             inputRichTextBox.Text = "";
             inputRichTextBox.SelectionChanged += InputRichTextBox_SelectionChanged;
-            inputRichTextBox.TextChanged += InputRichTextBox_TextChanged;
             inputRichTextBox.KeyDown += InputRichTextBox_KeyDown;
             inputRichTextBox.KeyPress += InputRichTextBox_KeyPress;
             // 
@@ -253,7 +254,6 @@ namespace Calculator
             button_shift.TabIndex = 30;
             button_shift.Tag = Keys.D7;
             button_shift.Text = "shift";
-            button_shift.UseVisualStyleBackColor = true;
             button_shift.Click += ButtonShift_Click;
             // 
             // button_space
@@ -284,7 +284,6 @@ namespace Calculator
             button_I.TabIndex = 27;
             button_I.Tag = Keys.I;
             button_I.Text = "i";
-            button_I.UseVisualStyleBackColor = true;
             button_I.Click += ButtonDigit_Click;
             // 
             // button_delete
@@ -299,7 +298,6 @@ namespace Calculator
             button_delete.TabIndex = 26;
             button_delete.Tag = Keys.Delete;
             button_delete.Text = "Del";
-            button_delete.UseVisualStyleBackColor = true;
             button_delete.Click += ButtonDigit_Click;
             // 
             // button_D0
@@ -314,7 +312,6 @@ namespace Calculator
             button_D0.TabIndex = 1;
             button_D0.Tag = Keys.D0;
             button_D0.Text = "0";
-            button_D0.UseVisualStyleBackColor = true;
             button_D0.Click += ButtonDigit_Click;
             // 
             // button_sign
@@ -329,7 +326,6 @@ namespace Calculator
             button_sign.TabIndex = 2;
             button_sign.Tag = Keys.Subtract;
             button_sign.Text = "+/-";
-            button_sign.UseVisualStyleBackColor = true;
             button_sign.Click += ButtonDigit_Click;
             // 
             // button_point
@@ -344,7 +340,6 @@ namespace Calculator
             button_point.TabIndex = 3;
             button_point.Tag = Keys.Decimal;
             button_point.Text = ",";
-            button_point.UseVisualStyleBackColor = true;
             button_point.Click += ButtonDigit_Click;
             // 
             // button_D1
@@ -359,7 +354,6 @@ namespace Calculator
             button_D1.TabIndex = 4;
             button_D1.Tag = Keys.D1;
             button_D1.Text = "1";
-            button_D1.UseVisualStyleBackColor = true;
             button_D1.Click += ButtonDigit_Click;
             // 
             // button_D2
@@ -374,7 +368,6 @@ namespace Calculator
             button_D2.TabIndex = 5;
             button_D2.Tag = Keys.D2;
             button_D2.Text = "2";
-            button_D2.UseVisualStyleBackColor = true;
             button_D2.Click += ButtonDigit_Click;
             // 
             // button_D3
@@ -389,7 +382,6 @@ namespace Calculator
             button_D3.TabIndex = 6;
             button_D3.Tag = Keys.D3;
             button_D3.Text = "3";
-            button_D3.UseVisualStyleBackColor = true;
             button_D3.Click += ButtonDigit_Click;
             // 
             // button_D4
@@ -404,7 +396,6 @@ namespace Calculator
             button_D4.TabIndex = 7;
             button_D4.Tag = Keys.D4;
             button_D4.Text = "4";
-            button_D4.UseVisualStyleBackColor = true;
             button_D4.Click += ButtonDigit_Click;
             // 
             // button_D5
@@ -419,7 +410,6 @@ namespace Calculator
             button_D5.TabIndex = 8;
             button_D5.Tag = Keys.D5;
             button_D5.Text = "5";
-            button_D5.UseVisualStyleBackColor = true;
             button_D5.Click += ButtonDigit_Click;
             // 
             // button_D6
@@ -434,7 +424,6 @@ namespace Calculator
             button_D6.TabIndex = 9;
             button_D6.Tag = Keys.D6;
             button_D6.Text = "6";
-            button_D6.UseVisualStyleBackColor = true;
             button_D6.Click += ButtonDigit_Click;
             // 
             // button_D7
@@ -449,7 +438,6 @@ namespace Calculator
             button_D7.TabIndex = 10;
             button_D7.Tag = Keys.D7;
             button_D7.Text = "7";
-            button_D7.UseVisualStyleBackColor = true;
             button_D7.Click += ButtonDigit_Click;
             // 
             // button_D8
@@ -464,7 +452,6 @@ namespace Calculator
             button_D8.TabIndex = 11;
             button_D8.Tag = Keys.D8;
             button_D8.Text = "8";
-            button_D8.UseVisualStyleBackColor = true;
             button_D8.Click += ButtonDigit_Click;
             // 
             // button_D9
@@ -479,7 +466,6 @@ namespace Calculator
             button_D9.TabIndex = 12;
             button_D9.Tag = Keys.D9;
             button_D9.Text = "9";
-            button_D9.UseVisualStyleBackColor = true;
             button_D9.Click += ButtonDigit_Click;
             // 
             // button_DA
@@ -495,7 +481,6 @@ namespace Calculator
             button_DA.TabIndex = 13;
             button_DA.Tag = Keys.A;
             button_DA.Text = "A";
-            button_DA.UseVisualStyleBackColor = true;
             button_DA.Click += ButtonDigit_Click;
             // 
             // button_DB
@@ -511,7 +496,6 @@ namespace Calculator
             button_DB.TabIndex = 14;
             button_DB.Tag = Keys.B;
             button_DB.Text = "B";
-            button_DB.UseVisualStyleBackColor = true;
             button_DB.Click += ButtonDigit_Click;
             // 
             // button_DC
@@ -527,7 +511,6 @@ namespace Calculator
             button_DC.TabIndex = 15;
             button_DC.Tag = Keys.C;
             button_DC.Text = "C";
-            button_DC.UseVisualStyleBackColor = true;
             button_DC.Click += ButtonDigit_Click;
             // 
             // button_DD
@@ -543,7 +526,6 @@ namespace Calculator
             button_DD.TabIndex = 16;
             button_DD.Tag = Keys.D;
             button_DD.Text = "D";
-            button_DD.UseVisualStyleBackColor = true;
             button_DD.Click += ButtonDigit_Click;
             // 
             // button_DE
@@ -559,7 +541,6 @@ namespace Calculator
             button_DE.TabIndex = 17;
             button_DE.Tag = Keys.E;
             button_DE.Text = "E";
-            button_DE.UseVisualStyleBackColor = true;
             button_DE.Click += ButtonDigit_Click;
             // 
             // button_DF
@@ -575,7 +556,6 @@ namespace Calculator
             button_DF.TabIndex = 18;
             button_DF.Tag = Keys.F;
             button_DF.Text = "F";
-            button_DF.UseVisualStyleBackColor = true;
             button_DF.Click += ButtonDigit_Click;
             // 
             // button_subtract
@@ -588,9 +568,7 @@ namespace Calculator
             button_subtract.Name = "button_subtract";
             button_subtract.Size = new Size(103, 37);
             button_subtract.TabIndex = 19;
-            button_subtract.Tag = KeysEx.AddSubtract;
             button_subtract.Text = "-";
-            button_subtract.UseVisualStyleBackColor = true;
             button_subtract.Click += ButtonDigit_Click;
             // 
             // button_multiply
@@ -605,7 +583,6 @@ namespace Calculator
             button_multiply.TabIndex = 20;
             button_multiply.Tag = Keys.Multiply;
             button_multiply.Text = "*";
-            button_multiply.UseVisualStyleBackColor = true;
             button_multiply.Click += ButtonDigit_Click;
             // 
             // button_divide
@@ -620,7 +597,6 @@ namespace Calculator
             button_divide.TabIndex = 21;
             button_divide.Tag = Keys.Divide;
             button_divide.Text = "/";
-            button_divide.UseVisualStyleBackColor = true;
             button_divide.Click += ButtonDigit_Click;
             // 
             // button_add
@@ -635,7 +611,6 @@ namespace Calculator
             button_add.TabIndex = 22;
             button_add.Tag = Keys.Add;
             button_add.Text = "+";
-            button_add.UseVisualStyleBackColor = true;
             button_add.Click += ButtonDigit_Click;
             // 
             // button_sqr
@@ -650,7 +625,6 @@ namespace Calculator
             button_sqr.TabIndex = 23;
             button_sqr.Tag = Keys.S;
             button_sqr.Text = "Sqr";
-            button_sqr.UseVisualStyleBackColor = true;
             button_sqr.Click += ButtonDigit_Click;
             // 
             // button_inv
@@ -663,9 +637,7 @@ namespace Calculator
             button_inv.Name = "button_inv";
             button_inv.Size = new Size(106, 37);
             button_inv.TabIndex = 24;
-            button_inv.Tag = KeysEx.AddInv;
             button_inv.Text = "1/";
-            button_inv.UseVisualStyleBackColor = true;
             button_inv.Click += ButtonDigit_Click;
             // 
             // button_back
@@ -680,7 +652,6 @@ namespace Calculator
             button_back.TabIndex = 25;
             button_back.Tag = Keys.Back;
             button_back.Text = "Back";
-            button_back.UseVisualStyleBackColor = true;
             button_back.Click += ButtonDigit_Click;
             // 
             // edgePanel
@@ -695,7 +666,7 @@ namespace Calculator
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem, memoryState });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(660, 24);
@@ -719,6 +690,13 @@ namespace Calculator
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new Size(65, 20);
             aboutToolStripMenuItem.Text = "Справка";
+            // 
+            // memoryState
+            // 
+            memoryState.Margin = new Padding(24, 1, 0, 2);
+            memoryState.Name = "memoryState";
+            memoryState.Size = new Size(12, 17);
+            memoryState.Text = "?";
             // 
             // splitter
             // 
@@ -825,5 +803,6 @@ namespace Calculator
         private Button button_shift;
         private Panel shiftPanel;
         private MySplitContainer splitter;
+        private ToolStripLabel memoryState;
     }
 }

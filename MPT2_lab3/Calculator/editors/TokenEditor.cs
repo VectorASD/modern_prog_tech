@@ -1,4 +1,5 @@
-﻿using Calculator.tokens;
+﻿using Calculator.extensions;
+using Calculator.tokens;
 using ConsoleApp;
 using System;
 using System.Collections.Generic;
@@ -178,15 +179,54 @@ namespace Calculator.editors {
             return Text;
         }
 
+
+
+
+
+        private class Token(RichTextBox rich, int start, int length) {
+            public void Red() {
+                rich.Select(start, length);
+                rich.SelectionBackColor = Color.Red;
+            }
+        }
         public void Colorize(RichTextBox rich) {
             int saved_start = rich.SelectionStart;
             int saved_length = rich.SelectionLength;
             int idx = 0;
+
+            IEditor prev_token = MathToken.L_sqbr;
+            Token? last_token = null;
+            int level = 0;
+            List<Token> chain = [];
+
             foreach (IEditor token in tokens) {
                 int start = tokens.Qsum_get(idx);
                 int end = tokens.Qsum_get(++idx);
-                rich.Select(start, end - start);
-                rich.SelectionBackColor = token switch {
+                int length = end - start;
+
+                if (token == MathToken.L_sqbr) level++;
+                if (token == MathToken.R_sqbr) level--;
+
+                bool error = false;
+                if (token is not SpaceToken) {
+                    if (MathToken.BinaryOperation(prev_token) && MathToken.BinaryOperation(token)) error = true;
+                    if (prev_token is ComplexEditor && token is ComplexEditor) error = true;
+                    // if (prev_token == MathToken.L_sqbr && token == MathToken.R_sqbr) error = true;
+                    if (level < 0) { level = 0; error = true; }
+
+                    if (MathToken.UnaryOperation(token)) chain.Add(new Token(rich, start, length));
+                    else {
+                        if (token is not ComplexEditor && token != MathToken.L_sqbr)
+                            foreach (var err_token in chain) err_token.Red();
+                        chain.Clear();
+                    }
+
+                    prev_token = token;
+                    last_token = token is MathToken && !MathToken.Bracket(token) ? new Token(rich, start, length) : null;
+                }
+
+                rich.Select(start, length);
+                rich.SelectionBackColor = error ? Color.Red : token switch {
                     SpaceToken => Color.PaleTurquoise,
                     ComplexEditor => Color.SpringGreen,
                     MathToken => Color.DeepSkyBlue,
@@ -197,6 +237,10 @@ namespace Calculator.editors {
                     _ => Color.Black
                 };
             }
+
+            foreach (var err_token in chain) err_token.Red();
+            last_token?.Red();
+
             rich.Select(saved_start, saved_length);
         }
     }

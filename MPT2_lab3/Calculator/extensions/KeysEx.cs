@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator {
+namespace Calculator.extensions {
     public class KeysEx {
         // между последней клавишей (OemClear = 0xFE)
         // и первым модификатором (Shift = 0x00010000)

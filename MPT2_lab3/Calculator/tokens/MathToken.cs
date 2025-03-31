@@ -22,9 +22,21 @@ namespace Calculator.tokens {
         public static readonly MathToken L_sqbr   = new("(");
         public static readonly MathToken R_sqbr   = new(")");
 
-        private static readonly MathToken[] partOfNumber = [subtract, inverse, divide];
+        private static readonly MathToken[] partsOfNumber = [subtract, inverse, divide];
         public static bool PartOfNumber(IEditor token) =>
-            token is MathToken math && partOfNumber.Contains(math);
+            token is MathToken math && partsOfNumber.Contains(math);
+
+        private static readonly MathToken[] binaryOperations = [add, subtract, multiply, divide];
+        public static bool BinaryOperation(IEditor token) =>
+            token is MathToken math && binaryOperations.Contains(math);
+
+        private static readonly MathToken[] unaryOperations = [inverse, square];
+        public static bool UnaryOperation(IEditor token) =>
+            token is MathToken math && unaryOperations.Contains(math);
+
+        private static readonly MathToken[] brackets = [L_sqbr, R_sqbr];
+        public static bool Bracket(IEditor token) =>
+            token is MathToken math && brackets.Contains(math);
 
 
 

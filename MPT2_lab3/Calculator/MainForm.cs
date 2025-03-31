@@ -1,4 +1,5 @@
 using Calculator.editors;
+using Calculator.extensions;
 using ConsoleApp;
 using System.Windows.Forms;
 
@@ -6,32 +7,36 @@ namespace Calculator {
     public partial class MainForm : Form {
         public MainForm() {
             InitializeComponent();
+            // отваливается из редактора:
+            button_inv.Tag = KeysEx.AddInv;
+            button_subtract.Tag = KeysEx.AddSubtract;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
             UpdateUI();
             inputRichTextBox.Text = editor.Text;
             InitDigitButtons();
+            
+            foreach (Control control in this.Descendants<Control>())
+                if (control is Button || control is RadioButton) control.GotFocus += Control_GotFocus;
+        }
+        private void Control_GotFocus(object? sender, EventArgs e) {
+            inputRichTextBox.Focus();
         }
 
 
 
         private readonly TokenEditor editor = new();
+        private readonly Memory memory = new();
 
-        private void InputRichTextBox_TextChanged(object sender, EventArgs e) {
-            // if (sender is not RichTextBox richTextBox) return;
-
-
-        }
-
-        private void UpdateUI(RichTextBox? rich = null) {
-            rich ??= inputRichTextBox;
+        private void UpdateUI() {
             try {
                 ANumber value = editor.Value;
                 outputLabel.Text = "Type: " + value.GetType().Name + "\nRaw: " + value.Raw + "\n" + editor.Debug();
             } catch (Exception err) {
                 outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
             }
+            memoryState.Text = memory.State;
         }
 
         // По прежнему, сначала KeyPress, потом KeyDown
@@ -154,7 +159,7 @@ namespace Calculator {
                     e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
                 }
 
-                UpdateUI(rich);
+                UpdateUI();
                 editor.Colorize(rich);
             } finally {
                 rich.EndUpdate();
