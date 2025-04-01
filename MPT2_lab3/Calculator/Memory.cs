@@ -31,9 +31,10 @@ namespace Calculator {
 
         // private const string on = "ON";
         // private const string off = "OFF";
-        private const string on = "(M)"; // а это уже по требованиям самой РГР
+        // public string State => state == MemoryState.ON ? on : off;
+
+        // private const string on = "(M)"; // а это уже по требованиям самой РГР
         private const string off = "(  )";
-        //public string State => state == MemoryState.ON ? on : off;
         public string State => state == MemoryState.ON ? $"(M: {number})" : off;
 
         public ANumber ReadNum() {

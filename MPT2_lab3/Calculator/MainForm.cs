@@ -30,15 +30,24 @@ namespace Calculator {
         private readonly Memory memory = new();
 
         private void UpdateUI() {
+            string first, second;
             try {
                 ANumber value = editor.Value;
-                outputLabel.Text = "Type: " + value.GetType().Name + "\nRaw: " + value.Raw + "\n" + editor.Debug();
-            } catch (Exception err) {
-                outputLabel.Text = "Error: " + err.Message + "\n" + editor.Debug();
-            }
+                first = "(Value) Type: " + value.GetType().Name + "\nRaw: " + value.Raw;
+            } catch (Exception err) { first = "(Value) Error: " + err.Message; }
+
+            try {
+                second = "(Debug) " + editor.Debug();
+            } catch (Exception err) { second = "(Debug) Error: " + err.Message; }
+
+            outputLabel.Text = first + "\n" + second;
+
+
+
             memoryState.Text = memory.State;
             button_MR.Enabled = memory.Number is not null;
         }
+
         private void UpdateColor() {
             MyRichTextBox rich = inputRichTextBox;
             rich.Updater(() => editor.Colorize(rich));
@@ -259,6 +268,10 @@ namespace Calculator {
             if (editor.CurrentNumber(out ANumber number))
                 memory.Add(number);
             UpdateUI();
+        }
+
+        private void Button_Result_Click(object sender, EventArgs e) {
+            editor.Parse();
         }
     }
 }

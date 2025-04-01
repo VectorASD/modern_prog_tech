@@ -281,5 +281,7 @@ namespace Calculator.editors {
             }
             return true;
         }
+
+        public void Parse() => tokens.Parse();
     }
 }

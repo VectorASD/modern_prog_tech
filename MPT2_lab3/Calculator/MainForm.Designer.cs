@@ -38,6 +38,7 @@ namespace Calculator
             keyLabel = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             keyboard = new TableLayoutPanel();
+            button_result = new Button();
             button_Mplus = new Button();
             button_MR = new Button();
             button_MS = new Button();
@@ -179,6 +180,7 @@ namespace Calculator
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
+            keyboard.Controls.Add(button_result, 5, 4);
             keyboard.Controls.Add(button_Mplus, 0, 4);
             keyboard.Controls.Add(button_MR, 0, 3);
             keyboard.Controls.Add(button_MS, 0, 2);
@@ -226,6 +228,19 @@ namespace Calculator
             keyboard.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             keyboard.Size = new Size(456, 211);
             keyboard.TabIndex = 6;
+            // 
+            // button_result
+            // 
+            button_result.Dock = DockStyle.Fill;
+            button_result.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            button_result.ForeColor = Color.Red;
+            button_result.Location = new Point(381, 141);
+            button_result.Margin = new Padding(1);
+            button_result.Name = "button_result";
+            button_result.Size = new Size(74, 33);
+            button_result.TabIndex = 33;
+            button_result.Text = "=";
+            button_result.Click += Button_Result_Click;
             // 
             // button_Mplus
             // 
@@ -872,5 +887,6 @@ namespace Calculator
         private Button button_Mplus;
         private Button button_MR;
         private Button button_MS;
+        private Button button_result;
     }
 }

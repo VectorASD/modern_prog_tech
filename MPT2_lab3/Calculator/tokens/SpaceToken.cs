@@ -6,50 +6,33 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Calculator.tokens {
-    public class SpaceToken(int count = 1) : IEditor {
+    public class SpaceToken(int count = 1) : AEditor {
         private int count = count;
 
-        public string Text {
+        public override string Text {
             get => "".PadRight(count);
             set => throw new NotImplementedException();
         }
-        public ANumber Value => throw new NotImplementedException();
-        public int NumSys {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-        public int Length => count;
-        public bool IsNegative => false;
+        public override int Length => count;
 
 
 
-        public override string ToString() => Text;
-        public bool IsZero => true;
+        public void Increment(int delta) => count += delta;
 
-        public string AddDigit(int digit, bool shift, int index, out int delta) {
-            throw new NotImplementedException();
-        }
 
-        public string AddSign(int index, out int delta) {
-            throw new NotImplementedException();
-        }
 
-        public string AddZero(bool shift, int index, out int delta) {
-            throw new NotImplementedException();
-        }
-
-        public string Backspace(int index, out int delta) {
+        public override string Backspace(int index, out int delta) {
             delta = count > 0 ? -1 : 0;
             count += delta;
             return Text;
         }
 
-        public string Clear() {
+        public override string Clear() {
             count = 0;
             return "";
         }
 
-        public string Handler(Keys keyCode, bool shift, bool ctrl, bool alt, int index, out int delta) {
+        public override string Handler(Keys keyCode, bool shift, bool ctrl, bool alt, int index, out int delta) {
             delta = 0;
             switch (keyCode) {
                 case Keys.Space: count++; delta = 1; break;
@@ -62,7 +45,5 @@ namespace Calculator.tokens {
             }
             return Text;
         }
-
-        public void Increment(int delta) => count += delta;
     }
 }

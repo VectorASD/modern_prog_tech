@@ -143,6 +143,7 @@ namespace Calculator.editors {
 
 
         public static readonly ComplexEditor Empty = new();
+        public static readonly ComplexEditor Zero = new("0");
 
         public bool Slice(int index, out ComplexEditor L, out ComplexEditor R) {
             string text = Text;
