@@ -18,5 +18,16 @@ namespace Calculator.tokens {
             get => $"Binary({LeftOperand}, {Operation.Quoted}, {RightOperand})";
             set => throw new NotImplementedException();
         }
+
+        // Процессор не теряли? А ведь это его часть:
+        public override ANumber Value =>
+            Operation.item switch {
+                MathItem.Add      => LeftOperand.Value + RightOperand.Value,
+                MathItem.Subtract => LeftOperand.Value - RightOperand.Value,
+                MathItem.Multiply => LeftOperand.Value * RightOperand.Value,
+                MathItem.Divide   => LeftOperand.Value / RightOperand.Value,
+                _ => throw new NotImplementedException($"Незарегестрированная бинарная операция: {TokenList.Format(Operation)}")
+            };
+        // (все реализации Value для IEditor - это процессор)
     }
 }

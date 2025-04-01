@@ -17,12 +17,26 @@ namespace Calculator {
 
         public bool updateMode = false;
         private int updateLevel = 0;
+        public int saved_SelectionStart;
+        public int saved_SelectionLength;
+
+        public void SetSelectionStart(int start) =>
+            saved_SelectionStart = SelectionStart = Math.Max(0, start);
+        public void SetSelectionLength(int length) =>
+            saved_SelectionLength = SelectionLength = Math.Max(0, length);
+        public void SetSelection(int start, int length) {
+            SetSelectionStart(start);
+            SetSelectionLength(length);
+        }
 
         private void BeginUpdate() {
             if (!updateMode) {
                 SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
                 OldEventMask = (IntPtr)SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
                 updateMode = true;
+
+                saved_SelectionStart = SelectionStart;
+                saved_SelectionLength = SelectionLength;
             }
             updateLevel++;
         }
@@ -31,6 +45,8 @@ namespace Calculator {
             if (!updateMode) return;
 
             if (--updateLevel <= 0) {
+                Select(saved_SelectionStart, saved_SelectionLength);
+
                 SendMessage(Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
                 SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, OldEventMask);
                 updateMode = false;

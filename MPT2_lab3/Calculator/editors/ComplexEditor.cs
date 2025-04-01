@@ -40,6 +40,13 @@ namespace Calculator.editors {
         public ComplexEditor(string? init_text = null) {
             if (init_text is not null) Text = init_text;
         }
+        public ComplexEditor(ANumber number) {
+            Text = number.ToString();
+        }
+        public ComplexEditor(Keys keyCode, bool shift, bool ctrl, bool alt, out int delta) {
+            if (keyCode >= Keys.A && keyCode <= Keys.F) numSys = 16;
+            Handler(keyCode, shift, ctrl, alt, 0, out delta);
+        }
 
         public ANumber Value =>
             IsImaginary ? BigComplex.Parse(Text, numSys)

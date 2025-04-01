@@ -30,17 +30,19 @@ namespace Calculator {
         private readonly Memory memory = new();
 
         private void UpdateUI() {
-            string first, second;
+            /* string first, second;
             try {
                 ANumber value = editor.Value;
                 first = "(Value) Type: " + value.GetType().Name + "\nRaw: " + value.Raw;
-            } catch (Exception err) { first = "(Value) Error: " + err.Message; }
+            } catch (Exception err) { first = "(Value) Error: " + err.Message; }*/
 
+            string second;
             try {
                 second = "(Debug) " + editor.Debug();
             } catch (Exception err) { second = "(Debug) Error: " + err.Message; }
 
-            outputLabel.Text = first + "\n" + second;
+            // outputLabel.Text = first + "\n" + second;
+            outputLabel.Text = second;
 
 
 
@@ -84,7 +86,7 @@ namespace Calculator {
             {'(', Keys.D9 | Keys.Shift}, {')', Keys.D0 | Keys.Shift},
         };
 
-        private void Remover(MyRichTextBox richTextBox, int count) {
+        private void Remover(MyRichTextBox richTextBox, int count, bool check = true) {
             int start = richTextBox.SelectionStart + count;
             while (count > 0) {
                 /*string text =*/
@@ -95,8 +97,8 @@ namespace Calculator {
                 count += delta;
             }
             richTextBox.Text = editor.Text;
-            richTextBox.SelectionStart = start;
-            CheckSelection(richTextBox);
+            richTextBox.SetSelection(start, 0);
+            if (check) CheckSelection(richTextBox);
         }
 
         private static void CopyText(RichTextBox richTextBox) {
@@ -119,7 +121,7 @@ namespace Calculator {
                 start += delta;
             }
             richTextBox.Text = editor.Text;
-            richTextBox.SelectionStart = start;
+            richTextBox.SetSelection(start, 0);
             CheckSelection(richTextBox);
         }
 
@@ -156,17 +158,17 @@ namespace Calculator {
                     e.Handled = true;
                 } else if (ctrl && keyCode == Keys.V) { // своя вставка Ctrl + V
                     int count = rich.SelectionLength;
-                    if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста со вставкой
+                    if (count > 0) Remover(rich, count, false); // комбинация удаления выделенного текста со вставкой
 
                     PasteText(rich, Clipboard.GetText());
                     e.Handled = true;
                 } else { // обычное развитие событий
                     int count = rich.SelectionLength;
-                    if (count > 1) Remover(rich, count); // комбинация удаления выделенного текста с обычным развитием событий
+                    if (count > 0) Remover(rich, count, false); // комбинация удаления выделенного текста с обычным развитием событий
 
                     int start = rich.SelectionStart;
                     rich.Text = editor.Handler(keyCode, shift, ctrl, alt, start, out int delta);
-                    rich.SelectionStart = Math.Max(0, start + delta);
+                    rich.SetSelectionStart(start + delta);
                     CheckSelection(rich);
                     e.Handled = true; // блокирует встроенное дополнительное (и лишнее) управление SelectionStart
                 }
@@ -190,7 +192,8 @@ namespace Calculator {
         private void SetValue(int numSys) {
             numSysNumericUpDown.Value = numSys;
             numSysTrackBar.Value = numSys;
-            editor.NumSys = numSys;
+            try { editor.NumSys = numSys; } catch (NotImplementedException) { }
+
             UpdateUI();
             UpdateColor();
 
@@ -217,9 +220,10 @@ namespace Calculator {
                 int value = editor.NumSys;
                 SetValue(value);
 
-                numSysTrackBar.Enabled = numSysNumericUpDown.Enabled = true;
+                numSysTrackBar.Visible = numSysNumericUpDown.Visible = true;
             } catch (NotImplementedException) {
-                numSysTrackBar.Enabled = numSysNumericUpDown.Enabled = false;
+                SetValue(16);
+                numSysTrackBar.Visible = numSysNumericUpDown.Visible = false;
                 UpdateColor();
             }
         }
@@ -232,6 +236,7 @@ namespace Calculator {
 
 
         bool keyboard_shift = false;
+        bool result_mode = false;
 
         private void ButtonDigit_Click(object sender, EventArgs e) {
             if (sender is not Button button || button.Tag is not Keys charCode) return;
@@ -245,9 +250,16 @@ namespace Calculator {
             keyboard_shift = !keyboard_shift;
             radioButton_shift.Checked = keyboard_shift;
         }
-        private void RadioButtonShift_Click(object sender, EventArgs e) {
-            if (sender is RadioButton radioButton)
-                radioButton.Checked = keyboard_shift;
+        private void ButtonResult_Click(object sender, EventArgs e) {
+            result_mode = !result_mode;
+            radioButton_result.Checked = result_mode;
+
+            inputRichTextBox.Updater(() => {
+                editor.SwitchResultMode(result_mode);
+                inputRichTextBox.Text = editor.Text;
+                UpdateUI();
+                UpdateColor();
+            });
         }
 
         private void Button_MC_Click(object sender, EventArgs e) {
@@ -268,10 +280,6 @@ namespace Calculator {
             if (editor.CurrentNumber(out ANumber number))
                 memory.Add(number);
             UpdateUI();
-        }
-
-        private void Button_Result_Click(object sender, EventArgs e) {
-            editor.Parse();
         }
     }
 }

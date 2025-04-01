@@ -38,6 +38,8 @@ namespace Calculator
             keyLabel = new Label();
             flowLayoutPanel1 = new FlowLayoutPanel();
             keyboard = new TableLayoutPanel();
+            resultPanel = new Panel();
+            radioButton_result = new RadioButton();
             button_result = new Button();
             button_Mplus = new Button();
             button_MR = new Button();
@@ -75,7 +77,7 @@ namespace Calculator
             button_inv = new Button();
             button_back = new Button();
             edgePanel = new Panel();
-            menuStrip1 = new MenuStrip();
+            menuStrip = new MenuStrip();
             editToolStripMenuItem = new ToolStripMenuItem();
             customizeToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
@@ -85,8 +87,9 @@ namespace Calculator
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             keyboard.SuspendLayout();
+            resultPanel.SuspendLayout();
             shiftPanel.SuspendLayout();
-            menuStrip1.SuspendLayout();
+            menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitter).BeginInit();
             splitter.Panel1.SuspendLayout();
             splitter.Panel2.SuspendLayout();
@@ -180,7 +183,7 @@ namespace Calculator
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
             keyboard.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 1F));
-            keyboard.Controls.Add(button_result, 5, 4);
+            keyboard.Controls.Add(resultPanel, 5, 4);
             keyboard.Controls.Add(button_Mplus, 0, 4);
             keyboard.Controls.Add(button_MR, 0, 3);
             keyboard.Controls.Add(button_MS, 0, 2);
@@ -225,22 +228,47 @@ namespace Calculator
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
             keyboard.RowStyles.Add(new RowStyle(SizeType.Percent, 1F));
-            keyboard.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             keyboard.Size = new Size(456, 211);
             keyboard.TabIndex = 6;
             // 
+            // resultPanel
+            // 
+            resultPanel.Controls.Add(radioButton_result);
+            resultPanel.Controls.Add(button_result);
+            resultPanel.Dock = DockStyle.Fill;
+            resultPanel.Location = new Point(381, 141);
+            resultPanel.Margin = new Padding(1);
+            resultPanel.Name = "resultPanel";
+            resultPanel.Size = new Size(74, 33);
+            resultPanel.TabIndex = 31;
+            // 
+            // radioButton_result
+            // 
+            radioButton_result.AutoSize = true;
+            radioButton_result.BackColor = SystemColors.ButtonFace;
+            radioButton_result.ForeColor = Color.Cornsilk;
+            radioButton_result.Location = new Point(4, 4);
+            radioButton_result.Name = "radioButton_result";
+            radioButton_result.Size = new Size(14, 13);
+            radioButton_result.TabIndex = 29;
+            radioButton_result.UseVisualStyleBackColor = false;
+            radioButton_result.Click += ButtonResult_Click;
+            // 
             // button_result
             // 
+            button_result.BackColor = SystemColors.Control;
             button_result.Dock = DockStyle.Fill;
             button_result.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_result.ForeColor = Color.Red;
-            button_result.Location = new Point(381, 141);
+            button_result.Location = new Point(0, 0);
             button_result.Margin = new Padding(1);
             button_result.Name = "button_result";
             button_result.Size = new Size(74, 33);
-            button_result.TabIndex = 33;
+            button_result.TabIndex = 30;
+            button_result.Tag = Keys.D7;
             button_result.Text = "=";
-            button_result.Click += Button_Result_Click;
+            button_result.UseVisualStyleBackColor = false;
+            button_result.Click += ButtonResult_Click;
             // 
             // button_Mplus
             // 
@@ -296,7 +324,6 @@ namespace Calculator
             // 
             // shiftPanel
             // 
-            shiftPanel.BorderStyle = BorderStyle.Fixed3D;
             shiftPanel.Controls.Add(radioButton_shift);
             shiftPanel.Controls.Add(button_shift);
             shiftPanel.Dock = DockStyle.Fill;
@@ -309,27 +336,29 @@ namespace Calculator
             // radioButton_shift
             // 
             radioButton_shift.AutoSize = true;
-            radioButton_shift.BackColor = Color.DarkGreen;
+            radioButton_shift.BackColor = SystemColors.ButtonFace;
             radioButton_shift.ForeColor = Color.Cornsilk;
-            radioButton_shift.Location = new Point(0, 0);
+            radioButton_shift.Location = new Point(4, 4);
             radioButton_shift.Name = "radioButton_shift";
             radioButton_shift.Size = new Size(14, 13);
             radioButton_shift.TabIndex = 29;
             radioButton_shift.UseVisualStyleBackColor = false;
-            radioButton_shift.Click += RadioButtonShift_Click;
+            radioButton_shift.Click += ButtonShift_Click;
             // 
             // button_shift
             // 
+            button_shift.BackColor = SystemColors.Control;
             button_shift.Dock = DockStyle.Fill;
             button_shift.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_shift.ForeColor = Color.Blue;
             button_shift.Location = new Point(0, 0);
             button_shift.Margin = new Padding(1);
             button_shift.Name = "button_shift";
-            button_shift.Size = new Size(70, 29);
+            button_shift.Size = new Size(74, 33);
             button_shift.TabIndex = 30;
             button_shift.Tag = Keys.D7;
             button_shift.Text = "shift";
+            button_shift.UseVisualStyleBackColor = false;
             button_shift.Click += ButtonShift_Click;
             // 
             // button_space
@@ -547,7 +576,6 @@ namespace Calculator
             // button_DA
             // 
             button_DA.Dock = DockStyle.Fill;
-            button_DA.Enabled = false;
             button_DA.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DA.ForeColor = Color.Blue;
             button_DA.Location = new Point(1, 176);
@@ -562,7 +590,6 @@ namespace Calculator
             // button_DB
             // 
             button_DB.Dock = DockStyle.Fill;
-            button_DB.Enabled = false;
             button_DB.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DB.ForeColor = Color.Blue;
             button_DB.Location = new Point(77, 176);
@@ -577,7 +604,6 @@ namespace Calculator
             // button_DC
             // 
             button_DC.Dock = DockStyle.Fill;
-            button_DC.Enabled = false;
             button_DC.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DC.ForeColor = Color.Blue;
             button_DC.Location = new Point(153, 176);
@@ -592,7 +618,6 @@ namespace Calculator
             // button_DD
             // 
             button_DD.Dock = DockStyle.Fill;
-            button_DD.Enabled = false;
             button_DD.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DD.ForeColor = Color.Blue;
             button_DD.Location = new Point(229, 176);
@@ -607,7 +632,6 @@ namespace Calculator
             // button_DE
             // 
             button_DE.Dock = DockStyle.Fill;
-            button_DE.Enabled = false;
             button_DE.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DE.ForeColor = Color.Blue;
             button_DE.Location = new Point(305, 176);
@@ -622,7 +646,6 @@ namespace Calculator
             // button_DF
             // 
             button_DF.Dock = DockStyle.Fill;
-            button_DF.Enabled = false;
             button_DF.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
             button_DF.ForeColor = Color.Blue;
             button_DF.Location = new Point(381, 176);
@@ -740,15 +763,15 @@ namespace Calculator
             edgePanel.Size = new Size(76, 35);
             edgePanel.TabIndex = 0;
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem, memoryState });
-            menuStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(483, 28);
-            menuStrip1.TabIndex = 7;
-            menuStrip1.Text = "menuStrip1";
+            menuStrip.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem, memoryState });
+            menuStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            menuStrip.Location = new Point(0, 0);
+            menuStrip.Name = "menuStrip";
+            menuStrip.Size = new Size(483, 28);
+            menuStrip.TabIndex = 7;
+            menuStrip.Text = "menuStrip1";
             // 
             // editToolStripMenuItem
             // 
@@ -811,9 +834,9 @@ namespace Calculator
             Controls.Add(flowLayoutPanel1);
             Controls.Add(numSysNumericUpDown);
             Controls.Add(numSysTrackBar);
-            Controls.Add(menuStrip1);
+            Controls.Add(menuStrip);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MainMenuStrip = menuStrip1;
+            MainMenuStrip = menuStrip;
             MinimumSize = new Size(410, 498);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -824,10 +847,12 @@ namespace Calculator
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             keyboard.ResumeLayout(false);
+            resultPanel.ResumeLayout(false);
+            resultPanel.PerformLayout();
             shiftPanel.ResumeLayout(false);
             shiftPanel.PerformLayout();
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            menuStrip.ResumeLayout(false);
+            menuStrip.PerformLayout();
             splitter.Panel1.ResumeLayout(false);
             splitter.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitter).EndInit();
@@ -845,7 +870,7 @@ namespace Calculator
         private Label keyLabel;
         private FlowLayoutPanel flowLayoutPanel1;
         private TableLayoutPanel keyboard;
-        private MenuStrip menuStrip1;
+        private MenuStrip menuStrip;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem customizeToolStripMenuItem;
         private ToolStripMenuItem aboutToolStripMenuItem;
@@ -887,6 +912,8 @@ namespace Calculator
         private Button button_Mplus;
         private Button button_MR;
         private Button button_MS;
+        private Panel resultPanel;
+        private RadioButton radioButton_result;
         private Button button_result;
     }
 }

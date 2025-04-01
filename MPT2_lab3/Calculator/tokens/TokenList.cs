@@ -78,12 +78,12 @@ namespace Calculator.tokens {
             }
 
             ComplexEditor? L_complex;
-            if (MathToken.PartOfNumber(left)) L_complex = new(left.Text);
+            if (left.IsPartOfNumber()) L_complex = new(left.Text);
             else if (left is ComplexEditor complex) L_complex = complex;
             else L_complex = null;
 
             ComplexEditor? R_complex;
-            if (MathToken.PartOfNumber(right)) R_complex = new(right.Text);
+            if (right.IsBinaryOperation()) R_complex = new(right.Text);
             else if (right is ComplexEditor complex) R_complex = complex;
             else R_complex = null;
 
@@ -131,8 +131,15 @@ namespace Calculator.tokens {
             tokens.Add(token);
             Qsum!.Add(Qsum.Last() + token.Length);
 
-            UpdateToken(0);
+            UpdateToken(tokens.Count - 1);
         }
+        public void RemoveLast() {
+            tokens.RemoveAt(tokens.Count - 1);
+            Qsum!.RemoveAt(Qsum.Count - 1);
+
+            UpdateToken(tokens.Count - 1);
+        }
+
         public void Resize(int idx, int size_delta, bool update = true) {
             for (int i = idx + 1; i < Qsum!.Count; i++)
                 Qsum[i] += size_delta;
@@ -190,19 +197,18 @@ namespace Calculator.tokens {
 
 
 
-        public string DebugOld() {
+        public string Debug() {
             List<int> res = [];
             for (int i = -3; i < 18; i++)
                 res.Add(Qsum!.BinarySearch(i));
-            string text = string.Join(", ", Qsum!) + '\n' + string.Join(", ", res);
+            string text = $"{ string.Join(", ", Qsum!) }\n{ string.Join(", ", res) }\n{ Parse() }";
             // MessageBox.Show(text);
             // Clipboard.SetText(text);
             /* Просмотр того, что выдаёт BinarySearch:
                 0, 7, 10, 14
                 -1, -1, -1, 0, -2, -2, -2, -2, -2, -2, 1, -3, -3, 2, -4, -4, -4, 3, -5, -5, -5   */
-            return text;
+            return text + "\n";
         }
-        public string Debug() => $"{Parse()}";
 
         public override string Clear() {
             foreach (var token in tokens) token.Clear();
@@ -269,20 +275,24 @@ namespace Calculator.tokens {
             return tokens.Count switch {
                 0 => ComplexEditor.Zero,
                 1 => tokens[0],
-                _ => Unary(MathToken.UnaryOperation)
-                   .Binary(MathToken.BinaryFirstOperation)
-                   .Binary(MathToken.BinarySecondOperation)
+                _ => Unary(MathTokenExtensions.IsUnaryOperation)
+                   .Binary(MathTokenExtensions.IsBinaryFirstOperation)
+                   .Binary(MathTokenExtensions.IsBinarySecondOperation)
                    .SimplifyTheEnd()
             };
         }
 
-        // обход: слева на право,   захват: круглые скобочки,   удаление: пробелы
+        // обход: слева на право,   захват: круглые скобочки,   удаление: пробелы и всё после '='
         private static IEditor Brackets(IEnumerator<IEditor> it) {
             List<IEditor> result = [];
             bool prev_bracket = false;
             while (it.MoveNext()) {
                 IEditor item = it.Current;
                 if (item is SpaceToken) continue;
+                if (item is MessageToken) {
+                    while (it.MoveNext()) { }
+                    break;
+                }
 
                 if (prev_bracket) {
                     if (item is ComplexEditor) result.Add(MathToken.multiply); // умножение между ')' и числом

@@ -23,12 +23,8 @@ namespace Calculator.editors {
             get => tokens.Text;
             set => throw new NotImplementedException();
         }
-        public TokenEditor(string? init_text = null) {
-            // DebugInit();
-            if (init_text is not null) Text = init_text;
-        }
+        public ANumber Value => Parse().Value;
 
-        public ANumber Value => tokens.Value;
         public void SetLastIndex(int index) => tokens.LastIndex = index;
         public int NumSys {
             get => tokens.NumSys;
@@ -110,47 +106,58 @@ namespace Calculator.editors {
                 return new SpaceToken(1);
             }
             IEditor? token = KeyCode_to_MathToken(keyCode, shift);
-            if (token is null) {
-                token = new ComplexEditor();
-                token.Handler(keyCode, shift, ctrl, alt, 0, out delta);
-            } else
+            if (token is null)
+                token = new ComplexEditor(keyCode, shift, ctrl, alt, out delta);
+            else
                 delta = token.Length;
             return token;
         }
 
-        public string Handler(Keys keyCode, bool shift, bool ctrl, bool alt, int index, out int delta) {
+        public void HandlerWrap(Keys keyCode, bool shift, bool ctrl, bool alt, int index, out int delta, out bool update_result) {
+            update_result = false;
+            if (result_mode) { // не даём редактировать/обрабатывать токены результата
+                int lock_pos = tokens.Qsum_get(result_token_idx);
+                if (index > lock_pos) { delta = lock_pos - index; return; }
+                update_result = true;
+            }
+
             if (tokens.Count == 0) {
                 IEditor new_token = CreateToken(keyCode, shift, ctrl, alt, out delta);
                 if (new_token.Length > 0) tokens.Add(new_token);
-                return Text;
+                return;
+            } else if (tokens[0] == result_token) {
+                IEditor new_token = CreateToken(keyCode, shift, ctrl, alt, out delta);
+                if (new_token.Length > 0) tokens.InsertRange(0, [new_token]);
+                return;
             }
 
             delta = 0;
-            if (keyCode == Keys.Back)
-                return Backspace(index, out delta);
-            if (keyCode == Keys.Delete)
-                return Backspace(index + 1, out _);
+            if (keyCode == Keys.Back) {
+                Backspace(index, out delta); return; }
+            if (keyCode == Keys.Delete) {
+                Backspace(index + 1, out _); return; }
 
             bool space_key = keyCode == Keys.Space;
             int idx = tokens.Index2Idx(index, space_key);
             IEditor token = tokens[idx];
+            if (token == result_token) token = tokens[--idx];
             int size = token.Length;
             index -= tokens.Qsum_get(idx); // теперь от 0 до size, не включая size
 
             if (token is SpaceToken) {
                 if (!space_key) {
                     IEditor middle = CreateToken(keyCode, shift, ctrl, alt, out delta);
-                    if (middle.Length <= 0) return Text;
+                    if (middle.Length <= 0) return;
 
                     SpaceToken left = new(index);
                     SpaceToken right = new(size - index);
                     tokens.RemoveAt(idx, false);
                     tokens.InsertRange(idx, [left, middle, right]);
-                    return Text;
+                    return;
                 }
                 token.Handler(keyCode, shift, ctrl, alt, index, out delta);
                 tokens.Resize(idx, token.Length - size);
-                return Text;
+                return;
             }
             
             if (token is ComplexEditor complex) {
@@ -160,23 +167,29 @@ namespace Calculator.editors {
                     IEditor new_token = math_token is not null ? math_token : new SpaceToken();
                     tokens.InsertRange(idx, [left, new_token, right]);
                     delta = new_token.Length;
-                    return Text;
+                    return;
                 }
                 token.Handler(keyCode, shift, ctrl, alt, index, out delta);
                 tokens.Resize(idx, token.Length - size);
-                return Text;
+                return;
             }
             
             if (token is MathToken) {
-                if (index > 0 && index < token.Length) return Text;
+                if (index > 0 && index < token.Length) return;
 
                 IEditor new_token = CreateToken(keyCode, shift, ctrl, alt, out delta);
-                if (new_token.Length <= 0) return Text;
+                if (new_token.Length <= 0) return;
 
                 tokens.InsertRange(index <= 0 ? idx : idx + 1, [new_token]);
-                return Text;
+                return;
             }
 
+            update_result = false;
+            return;
+        }
+        public string Handler(Keys keyCode, bool shift, bool ctrl, bool alt, int index, out int delta) {
+            HandlerWrap(keyCode, shift, ctrl, alt, index, out delta, out bool update_result);
+            if (update_result) PrintResult();
             return Text;
         }
 
@@ -184,7 +197,7 @@ namespace Calculator.editors {
 
 
 
-        private class Token(RichTextBox rich, int start, int length) {
+        private class ColorToken(RichTextBox rich, int start, int length) {
             public void Red(int current) {
                 if (start <= current && current - start <= length) return;
 
@@ -193,14 +206,15 @@ namespace Calculator.editors {
             }
         }
         public void Colorize(RichTextBox rich) {
-            int saved_start = rich.SelectionStart;
-            int saved_length = rich.SelectionLength;
+            // теперь изменение SelectionStart/SelectionLength не даст визуального эффекта
+            // за счёт MyRichTextBox с включенным методом Updater
+
             int idx = 0;
 
             IEditor? prev_token = null;
-            Token? last_token = null;
+            ColorToken? last_token = null;
             int level = 0;
-            List<Token> chain = [];
+            List<ColorToken> chain = [];
             int current = tokens.LastIndex;
 
             foreach (IEditor token in tokens) {
@@ -208,21 +222,23 @@ namespace Calculator.editors {
                 int end = tokens.Qsum_get(++idx);
                 int length = end - start;
 
+                bool is_result = result_mode && idx > result_token_idx && idx < tokens.Count;
+
                 if (token == MathToken.L_sqbr) level++;
                 if (token == MathToken.R_sqbr) level--;
 
                 bool error = false;
                 if (token is not SpaceToken) {
                     if (prev_token is null) {
-                        if (MathToken.BinaryOperation(token)) error = true;
+                        if (token.IsBinaryOperation()) error = true;
                     } else {
-                        if (MathToken.BinaryOperation(prev_token) && MathToken.BinaryOperation(token)) error = true;
+                        if (prev_token.IsBinaryOperation() && token.IsBinaryOperation()) error = true;
                         if (prev_token is ComplexEditor && token is ComplexEditor) error = true;
                     }
                     // if (prev_token == MathToken.L_sqbr && token == MathToken.R_sqbr) error = true;
                     if (level < 0) { level = 0; error = true; }
 
-                    if (MathToken.UnaryOperation(token)) chain.Add(new Token(rich, start, length));
+                    if (token.IsUnaryOperation()) chain.Add(new ColorToken(rich, start, length));
                     else {
                         if (token is not ComplexEditor && token != MathToken.L_sqbr)
                             foreach (var err_token in chain) err_token.Red(current);
@@ -230,28 +246,32 @@ namespace Calculator.editors {
                     }
 
                     prev_token = token;
-                    last_token = token is MathToken && !MathToken.Bracket(token) ? new Token(rich, start, length) : null;
+                    last_token = token is MathToken && !token.IsBracket() ? new ColorToken(rich, start, length) : null;
                 }
 
                 if (error && start <= current && current <= end) error = false;
 
                 rich.Select(start, length);
-                rich.SelectionBackColor = error ? Color.Red : token switch {
-                    SpaceToken => Color.PaleTurquoise,
-                    ComplexEditor => Color.SpringGreen,
-                    MathToken => Color.DeepSkyBlue,
-                    _ => Color.White
-                };
-                rich.SelectionColor = token switch {
-                    MathToken => Color.Blue,
-                    _ => Color.Black
-                };
+                rich.SelectionBackColor =
+                    is_result ? Color.White :
+                    error ? Color.Red :
+                    token switch {
+                        SpaceToken => Color.PaleTurquoise,
+                        ComplexEditor => Color.SpringGreen,
+                        MathToken => Color.DeepSkyBlue,
+                        _ => Color.White
+                    };
+                rich.SelectionColor =
+                    is_result ? Color.Gray :
+                    token switch {
+                        MathToken => Color.Blue,
+                        MessageToken => Color.Red,
+                        _ => Color.Black
+                    };
             }
 
             foreach (var err_token in chain) err_token.Red(current);
             last_token?.Red(current);
-
-            rich.Select(saved_start, saved_length);
         }
 
 
@@ -282,6 +302,43 @@ namespace Calculator.editors {
             return true;
         }
 
-        public void Parse() => tokens.Parse();
+        public IEditor Parse() => tokens.Parse();
+
+
+
+        private bool result_mode = false;
+        private static readonly MessageToken result_token = new(" ");
+        private int result_token_idx = -1;
+
+        private void PrintResult() {
+            if (result_mode) RemoveResult();
+
+            result_token_idx = tokens.Count;
+            tokens.Add(result_token); // имитатор пробела ради своего Syntax Hightlight
+            tokens.Add(MathToken.result);
+            tokens.Add(new SpaceToken());
+            IEditor result;
+            try {
+                result = new ComplexEditor(Value);
+            } catch (Exception err) {
+                result = new MessageToken(err.Message);
+            }
+            tokens.Add(result);
+            result_mode = true;
+        }
+        private void RemoveResult() {
+            if (!result_mode) return;
+
+            tokens.RemoveLast(); // result
+            tokens.RemoveLast(); // new SpaceToken()
+            tokens.RemoveLast(); // MathToken.result
+            tokens.RemoveLast(); // first_result
+            result_mode = false;
+            result_token_idx = -1;
+        }
+        public void SwitchResultMode(bool mode) {
+            if (mode) PrintResult();
+            else RemoveResult();
+        }
     }
 }

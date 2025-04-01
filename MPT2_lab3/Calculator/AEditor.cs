@@ -27,7 +27,9 @@ namespace Calculator {
 
 
         public bool Equals(AEditor? other) =>
-            other is not null && Text == other.Text; // IEquatable<AEditor>
+            other is not null &&
+            GetType() == other.GetType() &&
+            Text == other.Text; // IEquatable<AEditor>
         public override bool Equals(object? obj) => Equals(obj as MathToken);
         public override int GetHashCode() => Text.GetHashCode();
 
