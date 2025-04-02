@@ -89,6 +89,7 @@ namespace Calculator
             aboutMenuItem = new ToolStripMenuItem();
             memoryState = new ToolStripLabel();
             splitter = new MySplitContainer();
+            historyMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSysNumericUpDown).BeginInit();
             flowLayoutPanel1.SuspendLayout();
@@ -820,7 +821,7 @@ namespace Calculator
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { editMenuItem, customizeMenuItem, aboutMenuItem, memoryState });
+            menuStrip.Items.AddRange(new ToolStripItem[] { editMenuItem, customizeMenuItem, aboutMenuItem, historyMenuItem, memoryState });
             menuStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
@@ -838,14 +839,14 @@ namespace Calculator
             // copyButton
             // 
             copyButton.Name = "copyButton";
-            copyButton.Size = new Size(180, 22);
+            copyButton.Size = new Size(139, 22);
             copyButton.Text = "Копировать";
             copyButton.Click += CopyButton_Click;
             // 
             // pasteButton
             // 
             pasteButton.Name = "pasteButton";
-            pasteButton.Size = new Size(180, 22);
+            pasteButton.Size = new Size(139, 22);
             pasteButton.Text = "Вставить";
             pasteButton.Click += PasteButton_Click;
             // 
@@ -859,7 +860,7 @@ namespace Calculator
             // debugButton
             // 
             debugButton.Name = "debugButton";
-            debugButton.Size = new Size(180, 22);
+            debugButton.Size = new Size(109, 22);
             debugButton.Text = "Debug";
             debugButton.Click += ButtonDebug_Click;
             // 
@@ -902,6 +903,13 @@ namespace Calculator
             splitter.SplitterDistance = 158;
             splitter.SplitterWidth = 8;
             splitter.TabIndex = 8;
+            // 
+            // historyMenuItem
+            // 
+            historyMenuItem.Name = "historyMenuItem";
+            historyMenuItem.Size = new Size(66, 24);
+            historyMenuItem.Text = "История";
+            historyMenuItem.Click += HistoryMenuItem_Click;
             // 
             // MainForm
             // 
@@ -1001,5 +1009,6 @@ namespace Calculator
         private ToolStripMenuItem debugButton;
         private ToolStripMenuItem copyButton;
         private ToolStripMenuItem pasteButton;
+        private ToolStripMenuItem historyMenuItem;
     }
 }

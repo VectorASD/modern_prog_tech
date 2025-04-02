@@ -23,7 +23,8 @@ namespace Calculator.editors {
             get => tokens.Text;
             set => throw new NotImplementedException();
         }
-        public ANumber Value => Parse().Value;
+        public ANumber Value => tokens.Value;
+        public IEditor Parse() => tokens.Parse();
 
         public void SetLastIndex(int index) => tokens.LastIndex = index;
         public int NumSys {
@@ -31,11 +32,11 @@ namespace Calculator.editors {
             set => tokens.NumSys = value;
         }
         public int Length => tokens.Length;
-        public bool IsNegative => throw new NotImplementedException();
-
-
-
         public override string ToString() => Text;
+
+
+
+        public bool IsNegative => throw new NotImplementedException();
         public bool IsZero => throw new NotImplementedException();
 
         public string AddSign(int index, out int delta) => // unused
@@ -315,16 +316,19 @@ namespace Calculator.editors {
             return true;
         }
 
-        public IEditor Parse() => tokens.Parse();
-
 
 
         private bool result_mode = false;
         private static readonly MessageToken result_token = new(" ");
         private int result_token_idx = -1;
 
+        private History? history;
+        public void SetHistory(History history) => this.history = history;
+
         private void PrintResult() {
             if (result_mode) RemoveResult();
+
+            string input = Text;
 
             result_token_idx = tokens.Count;
             tokens.Add(result_token); // имитатор пробела ради своего Syntax Hightlight
@@ -332,12 +336,16 @@ namespace Calculator.editors {
             tokens.Add(new SpaceToken());
             IEditor result;
             try {
+                tokens.ClearCache();
                 result = new ComplexEditor(Value);
             } catch (Exception err) {
                 result = new MessageToken(err.Message);
             }
             tokens.Add(result);
             result_mode = true;
+
+            string output = result.Text;
+            history?.AddRecord(input, output);
         }
         private void RemoveResult() {
             if (!result_mode) return;
@@ -352,6 +360,12 @@ namespace Calculator.editors {
         public void SwitchResultMode(bool mode) {
             if (mode) PrintResult();
             else RemoveResult();
+        }
+        public void ResetResult() {
+            if (!result_mode) return;
+
+            RemoveResult();
+            PrintResult();
         }
     }
 }

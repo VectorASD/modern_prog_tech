@@ -15,6 +15,7 @@ namespace Calculator {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
+            editor.SetHistory(history);
             InitDigitButtons();
             UpdateUI();
             inputRichTextBox.Text = editor.Text;
@@ -28,6 +29,7 @@ namespace Calculator {
 
 
 
+        private readonly History history = new();
         private readonly TokenEditor editor = new();
         private readonly Memory memory = new();
 
@@ -226,6 +228,11 @@ namespace Calculator {
             numSysTrackBar.Value = numSys;
             try { editor.NumSys = numSys; } catch (NotImplementedException) { }
 
+            inputRichTextBox.Updater(() => {
+                editor.ResetResult();
+                inputRichTextBox.Text = editor.Text;
+            });
+
             UpdateUI();
             UpdateColor();
 
@@ -340,6 +347,11 @@ namespace Calculator {
         private void AboutMenuItem_Click(object sender, EventArgs e) {
             AboutForm form = new();
             form.ShowDialog(this);
+        }
+        private void HistoryMenuItem_Click(object sender, EventArgs e) {
+            HistoryForm form = new();
+            form.LoadHistory(history);
+            form.Show(this);
         }
     }
 }

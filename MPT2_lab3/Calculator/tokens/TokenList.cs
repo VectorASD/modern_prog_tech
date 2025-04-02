@@ -18,7 +18,17 @@ namespace Calculator.tokens {
             get => string.Concat(tokens);
             set => throw new NotImplementedException();
         }
-        public override ANumber Value => tokens.Count == 0 ? BigInt.Zero : tokens.First().Value;
+
+        IEditor? parse_cache;
+        ANumber? value_cache;
+
+        public override ANumber Value => value_cache ??= Parse().Value;
+        public IEditor Parse() => parse_cache ??= Brackets(tokens.GetEnumerator());
+
+        public void ClearCache() {
+            parse_cache = null;
+            value_cache = null;
+        }
 
 
 
@@ -311,7 +321,5 @@ namespace Calculator.tokens {
 
             return new TokenList(result).Simplify();
         }
-
-        public IEditor Parse() => Brackets(tokens.GetEnumerator());
     }
 }
