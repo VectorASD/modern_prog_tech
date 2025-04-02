@@ -15,9 +15,9 @@ namespace Calculator {
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
+            InitDigitButtons();
             UpdateUI();
             inputRichTextBox.Text = editor.Text;
-            InitDigitButtons();
 
             foreach (Control control in this.Descendants<Control>())
                 if (control is Button || control is RadioButton) control.GotFocus += Control_GotFocus;
@@ -54,6 +54,12 @@ namespace Calculator {
             button_MR.Enabled = memory.Number is not null;
             debugButton.Text = "Debug (" + (debug_mode ? "on" : "off") + ")";
             debugButton.ForeColor = debug_mode ? Color.Green : Color.Gray;
+
+            if (digit_buttons is not null)
+                for (int i = 10; i < 16; i++)
+                    digit_buttons[i].Text = keyboard_shift ?
+                        digit_buttons[i].Text.ToUpper() :
+                        digit_buttons[i].Text.ToLower();
         }
 
         private void UpdateColor() {
@@ -61,20 +67,11 @@ namespace Calculator {
             rich.Updater(() => editor.Colorize(rich));
         }
 
-        // По прежнему, сначала KeyPress, потом KeyDown
-        // e.Handled блокирует ввод только в KeyPress
-        // тем ни менее, свойство Text обновляется только после KeyDown
-        // KeyPress НЕ чувствителен к спец-символам (Ctrl, Shift, Alt, Esc, NumLock, Capital...)
-        // KeyPress работает с фактическими char, а KeyDown - с физическими клавишами
-        // Если убрать все MessageBox.Show, то порядок KeyPress и KeyDown будто поменяется :/
 
-        private void InputRichTextBox_KeyPress(object sender, KeyPressEventArgs e) {
-            // if (sender is not RichTextBox richTextBox) return;
 
-            // MessageBox.Show("KeyPress: '" + richTextBox.Text + "', '" + e.KeyChar + "'");
 
-            e.Handled = true;
-        }
+
+        // ~~~ Обработка клавиш физической клавиатуры
 
         private static readonly Keys[] arrows = [Keys.Left, Keys.Right, Keys.Up, Keys.Down];
         private static readonly Keys[] modifier_keys = [Keys.ControlKey, Keys.ShiftKey, Keys.Home];
@@ -131,6 +128,21 @@ namespace Calculator {
             CheckSelection(richTextBox);
         }
 
+        // По прежнему, сначала KeyPress, потом KeyDown
+        // e.Handled блокирует ввод только в KeyPress
+        // тем ни менее, свойство Text обновляется только после KeyDown
+        // KeyPress НЕ чувствителен к спец-символам (Ctrl, Shift, Alt, Esc, NumLock, Capital...)
+        // KeyPress работает с фактическими char, а KeyDown - с физическими клавишами
+        // Если убрать все MessageBox.Show, то порядок KeyPress и KeyDown будто поменяется :/
+
+        private void InputRichTextBox_KeyPress(object sender, KeyPressEventArgs e) {
+            // if (sender is not RichTextBox richTextBox) return;
+
+            // MessageBox.Show("KeyPress: '" + richTextBox.Text + "', '" + e.KeyChar + "'");
+
+            e.Handled = true;
+        }
+
         private void InputRichTextBox_KeyDown(object sender, KeyEventArgs e) {
             if (sender is not MyRichTextBox rich) return;
 
@@ -142,7 +154,7 @@ namespace Calculator {
             bool ctrl = (modifiers & Keys.Control) != 0;
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
-            Keys keyCode = (Keys) e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
+            Keys keyCode = (Keys)e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
             Keys origKeyCode = keyCode;
             if (keyCode == Keys.OemPeriod) keyCode = Keys.Decimal; // NumLock mode + Delete = Decimal O_o
             else if (keyCode == Keys.OemMinus) keyCode = Keys.Subtract;
@@ -197,6 +209,8 @@ namespace Calculator {
         }
 
 
+
+        // ~~~ Команды ввода системы счисления
 
         private Button[]? digit_buttons = null;
         private void InitDigitButtons() {
@@ -253,6 +267,8 @@ namespace Calculator {
 
 
 
+        // ~~~ Команды виртуальной клавиатуры
+
         bool keyboard_shift = false;
         bool result_mode = false;
         bool debug_mode = false;
@@ -260,7 +276,7 @@ namespace Calculator {
         private void ButtonDigit_Click(object sender, EventArgs e) {
             if (sender is not Button button || button.Tag is not Keys charCode) return;
 
-            if (keyboard_shift) charCode |= Keys.Shift;
+            if (keyboard_shift && charCode >= Keys.A && charCode <= Keys.F) charCode |= Keys.Shift;
 
             InputRichTextBox_KeyDown(inputRichTextBox, new KeyEventArgs(charCode));
         }
@@ -268,6 +284,7 @@ namespace Calculator {
         private void ButtonShift_Click(object sender, EventArgs e) {
             keyboard_shift = !keyboard_shift;
             radioButton_shift.Checked = keyboard_shift;
+            UpdateUI();
         }
         private void ButtonResult_Click(object sender, EventArgs e) {
             result_mode = !result_mode;
@@ -279,10 +296,6 @@ namespace Calculator {
                 UpdateUI();
                 UpdateColor();
             });
-        }
-        private void ButtonDebug_Click(object sender, EventArgs e) {
-            debug_mode = !debug_mode;
-            UpdateUI();
         }
 
         private void Button_MC_Click(object sender, EventArgs e) {
@@ -303,6 +316,30 @@ namespace Calculator {
             if (editor.CurrentNumber(out ANumber number))
                 memory.Add(number);
             UpdateUI();
+        }
+
+
+
+        // ~~~ Менюшные команды
+
+        private void ButtonDebug_Click(object sender, EventArgs e) {
+            debug_mode = !debug_mode;
+            UpdateUI();
+        }
+
+        private void CopyButton_Click(object sender, EventArgs e) {
+            string text = inputRichTextBox.SelectedText;
+            if (text.Length > 0) Clipboard.SetText(text);
+            else MessageBox.Show("Сначала выделите текст");
+        }
+
+        private void PasteButton_Click(object sender, EventArgs e) {
+            InputRichTextBox_KeyDown(inputRichTextBox, new KeyEventArgs(Keys.Control | Keys.V));
+        }
+
+        private void AboutMenuItem_Click(object sender, EventArgs e) {
+            AboutForm form = new();
+            form.ShowDialog(this);
         }
     }
 }

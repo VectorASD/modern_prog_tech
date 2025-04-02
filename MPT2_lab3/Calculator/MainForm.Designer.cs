@@ -81,10 +81,12 @@ namespace Calculator
             button_C = new Button();
             button_CE = new Button();
             menuStrip = new MenuStrip();
-            editToolStripMenuItem = new ToolStripMenuItem();
-            customizeToolStripMenuItem = new ToolStripMenuItem();
+            editMenuItem = new ToolStripMenuItem();
+            copyButton = new ToolStripMenuItem();
+            pasteButton = new ToolStripMenuItem();
+            customizeMenuItem = new ToolStripMenuItem();
             debugButton = new ToolStripMenuItem();
-            aboutToolStripMenuItem = new ToolStripMenuItem();
+            aboutMenuItem = new ToolStripMenuItem();
             memoryState = new ToolStripLabel();
             splitter = new MySplitContainer();
             ((System.ComponentModel.ISupportInitialize)numSysTrackBar).BeginInit();
@@ -818,7 +820,7 @@ namespace Calculator
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, customizeToolStripMenuItem, aboutToolStripMenuItem, memoryState });
+            menuStrip.Items.AddRange(new ToolStripItem[] { editMenuItem, customizeMenuItem, aboutMenuItem, memoryState });
             menuStrip.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
@@ -826,18 +828,33 @@ namespace Calculator
             menuStrip.TabIndex = 7;
             menuStrip.Text = "menuStrip1";
             // 
-            // editToolStripMenuItem
+            // editMenuItem
             // 
-            editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new Size(59, 24);
-            editToolStripMenuItem.Text = "Правка";
+            editMenuItem.DropDownItems.AddRange(new ToolStripItem[] { copyButton, pasteButton });
+            editMenuItem.Name = "editMenuItem";
+            editMenuItem.Size = new Size(59, 24);
+            editMenuItem.Text = "Правка";
             // 
-            // customizeToolStripMenuItem
+            // copyButton
             // 
-            customizeToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { debugButton });
-            customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            customizeToolStripMenuItem.Size = new Size(78, 24);
-            customizeToolStripMenuItem.Text = "Настройка";
+            copyButton.Name = "copyButton";
+            copyButton.Size = new Size(180, 22);
+            copyButton.Text = "Копировать";
+            copyButton.Click += CopyButton_Click;
+            // 
+            // pasteButton
+            // 
+            pasteButton.Name = "pasteButton";
+            pasteButton.Size = new Size(180, 22);
+            pasteButton.Text = "Вставить";
+            pasteButton.Click += PasteButton_Click;
+            // 
+            // customizeMenuItem
+            // 
+            customizeMenuItem.DropDownItems.AddRange(new ToolStripItem[] { debugButton });
+            customizeMenuItem.Name = "customizeMenuItem";
+            customizeMenuItem.Size = new Size(78, 24);
+            customizeMenuItem.Text = "Настройка";
             // 
             // debugButton
             // 
@@ -846,11 +863,12 @@ namespace Calculator
             debugButton.Text = "Debug";
             debugButton.Click += ButtonDebug_Click;
             // 
-            // aboutToolStripMenuItem
+            // aboutMenuItem
             // 
-            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(65, 24);
-            aboutToolStripMenuItem.Text = "Справка";
+            aboutMenuItem.Name = "aboutMenuItem";
+            aboutMenuItem.Size = new Size(65, 24);
+            aboutMenuItem.Text = "Справка";
+            aboutMenuItem.Click += AboutMenuItem_Click;
             // 
             // memoryState
             // 
@@ -933,9 +951,9 @@ namespace Calculator
         private FlowLayoutPanel flowLayoutPanel1;
         private TableLayoutPanel keyboard;
         private MenuStrip menuStrip;
-        private ToolStripMenuItem editToolStripMenuItem;
-        private ToolStripMenuItem customizeToolStripMenuItem;
-        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripMenuItem editMenuItem;
+        private ToolStripMenuItem customizeMenuItem;
+        private ToolStripMenuItem aboutMenuItem;
         private Panel edgePanel;
         private Button button_D0;
         private Button button_sign;
@@ -981,5 +999,7 @@ namespace Calculator
         private Button button_C;
         private Button button_CE;
         private ToolStripMenuItem debugButton;
+        private ToolStripMenuItem copyButton;
+        private ToolStripMenuItem pasteButton;
     }
 }
