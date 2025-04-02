@@ -12,5 +12,7 @@ namespace Calculator.extensions {
 
         public const Keys AddInv = (Keys) 0x1000;
         public const Keys AddSubtract = (Keys) 0x1001;
+        public const Keys CE = (Keys) 0x1002;
+        public const Keys C = (Keys) 0x1003;
     }
 }

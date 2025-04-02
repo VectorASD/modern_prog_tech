@@ -136,6 +136,8 @@ namespace Calculator.editors {
                 Backspace(index, out delta); return; }
             if (keyCode == Keys.Delete) {
                 Backspace(index + 1, out _); return; }
+            if (keyCode == KeysEx.C) {
+                Clear(); return; }
 
             bool space_key = keyCode == Keys.Space;
             int idx = tokens.Index2Idx(index, space_key);
@@ -143,6 +145,17 @@ namespace Calculator.editors {
             if (token == result_token) token = tokens[--idx];
             int size = token.Length;
             index -= tokens.Qsum_get(idx); // теперь от 0 до size, не включая size
+
+            if (keyCode == KeysEx.CE) {
+                int token_length;
+                try {
+                    if (token.IsZero) token_length = 0;
+                    else { token.Clear(); token_length = token.Length; }
+                } catch (NotImplementedException) { token_length = 0; }
+                delta = token_length - index;
+                tokens.Resize(idx, token_length - size);
+                return;
+            }
 
             if (token is SpaceToken) {
                 if (!space_key) {

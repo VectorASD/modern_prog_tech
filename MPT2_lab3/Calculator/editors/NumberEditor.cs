@@ -11,6 +11,7 @@ namespace Calculator.editors {
         private readonly List<char> text = [.. init_text];
         private bool negative = false;
         private int numSys = 10;
+        private readonly string zero_view = "0"; // Отображение нуля
 
         public string Text {
             get => (negative ? "-" : "") + new string([.. text]);
@@ -70,6 +71,7 @@ namespace Calculator.editors {
         public string Clear() { // unused
             negative = false;
             text.Clear();
+            text.AddRange(zero_view);
             return Text;
         }
 

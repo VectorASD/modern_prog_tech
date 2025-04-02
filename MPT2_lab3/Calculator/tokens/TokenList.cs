@@ -211,7 +211,8 @@ namespace Calculator.tokens {
         }
 
         public override string Clear() {
-            foreach (var token in tokens) token.Clear();
+            foreach (var token in tokens)
+                try { token.Clear(); } catch (NotImplementedException) { }
             tokens.Clear();
 
             Qsum!.Clear();

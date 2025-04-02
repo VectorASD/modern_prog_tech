@@ -10,6 +10,8 @@ namespace Calculator {
             // отваливается из редактора:
             button_inv.Tag = KeysEx.AddInv;
             button_subtract.Tag = KeysEx.AddSubtract;
+            button_CE.Tag = KeysEx.CE;
+            button_C.Tag = KeysEx.C;
         }
 
         private void MainForm_Load(object sender, EventArgs e) {
@@ -36,18 +38,22 @@ namespace Calculator {
                 first = "(Value) Type: " + value.GetType().Name + "\nRaw: " + value.Raw;
             } catch (Exception err) { first = "(Value) Error: " + err.Message; }*/
 
-            string second;
-            try {
-                second = "(Debug) " + editor.Debug();
-            } catch (Exception err) { second = "(Debug) Error: " + err.Message; }
+            if (debug_mode) {
+                string second;
+                try {
+                    second = "(Debug) " + editor.Debug();
+                } catch (Exception err) { second = "(Debug) Error: " + err.Message; }
 
-            // outputLabel.Text = first + "\n" + second;
-            outputLabel.Text = second;
+                // outputLabel.Text = first + "\n" + second;
+                outputLabel.Text = second;
+            } else outputLabel.Text = "";
 
 
 
             memoryState.Text = memory.State;
             button_MR.Enabled = memory.Number is not null;
+            debugButton.Text = "Debug (" + (debug_mode ? "on" : "off") + ")";
+            debugButton.ForeColor = debug_mode ? Color.Green : Color.Gray;
         }
 
         private void UpdateColor() {
@@ -136,7 +142,7 @@ namespace Calculator {
             bool ctrl = (modifiers & Keys.Control) != 0;
             bool alt = (modifiers & Keys.Alt) != 0; // других модификаторов просто нет
 
-            Keys keyCode = (Keys)e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
+            Keys keyCode = (Keys) e.KeyValue; // e.KeyCode потеряет значения из моего KeysEx
             Keys origKeyCode = keyCode;
             if (keyCode == Keys.OemPeriod) keyCode = Keys.Decimal; // NumLock mode + Delete = Decimal O_o
             else if (keyCode == Keys.OemMinus) keyCode = Keys.Subtract;
@@ -150,7 +156,19 @@ namespace Calculator {
             if (modifier_keys.Contains(keyCode)) return; // игнорируем обработку клавиш-модификаторов (иначе ctrl сразу сбросит выделение)
             if (ctrl && (keyCode == Keys.C || keyCode == Keys.A)) return; // встроенный Ctrl + A и Ctrl + C
 
+            if (keyCode == Keys.Enter) {
+                ButtonResult_Click(123, new());
+                e.Handled = true;
+                return;
+            }
+            if (keyCode == KeysEx.C) {
+                DialogResult result = MessageBox.Show("Это действие приведёт к полной очистке всего содержимого!", "Уверены?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result != DialogResult.Yes) return;
+            }
+
             rich.Updater(() => { // сработало!!!!!
+                if (keyCode == KeysEx.C && result_mode) ButtonResult_Click(123, new());
+
                 if (rich.SelectionLength > 0 && remove_keys.Contains(keyCode)) { // удаление выделенного текста
                     if (keyCode == Keys.X) CopyText(rich);
                     int count = rich.SelectionLength;
@@ -237,6 +255,7 @@ namespace Calculator {
 
         bool keyboard_shift = false;
         bool result_mode = false;
+        bool debug_mode = false;
 
         private void ButtonDigit_Click(object sender, EventArgs e) {
             if (sender is not Button button || button.Tag is not Keys charCode) return;
@@ -260,6 +279,10 @@ namespace Calculator {
                 UpdateUI();
                 UpdateColor();
             });
+        }
+        private void ButtonDebug_Click(object sender, EventArgs e) {
+            debug_mode = !debug_mode;
+            UpdateUI();
         }
 
         private void Button_MC_Click(object sender, EventArgs e) {
